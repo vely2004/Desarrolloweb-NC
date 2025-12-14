@@ -1,0 +1,78 @@
+/*Estilo general de la página*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Times New Roman", Times, serif;
+  background-color: #f0c1f0;
+  color: #333;
+  line-height: 1.6;
+  padding: 20px;
+}
+/*Estilo de encabezados y textos*/
+
+h1 {
+    color:hsl(310, 100%, 52%);
+    font-size: 2.5rem;
+    margin:30px 0;
+    text-align:center;
+}
+h2, h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+p {
+  margin-bottom: 15px;
+}
+
+ul, ol {
+  margin: 15px 0 15px 30px;
+}
+/*Tabla de opinión*/
+table {
+    width: 80%;
+    margin:20px auto;
+    border-collapse: collapse;
+    box-shadow: 0 2px 5px rgba(0,0,0.1);
+    background-color: #f1a9dc
+}
+table th, table td{
+    padding: 12px 15px;
+    border:1px solid #ff48e0;
+    text-align: center;
+}
+table tbody tr:hover{
+    background-color: #f0c1f0
+}
+/*Formulario de opinión*/
+form {
+  background-color: #fcafe8;
+  border: 2px solid #d983f3; 
+  border-radius: 15px; 
+  max-width: 400px; 
+  padding: 20px;
+  margin: 20px 0
+}
+form input[type="text"],
+form input[type="email"] {
+  width: 100%; 
+  padding: 5px;
+  margin-bottom: 10px; 
+  border: 1px solid #dfa4f1; 
+  border-radius: 15px;
+}
+form button {
+  background-color: #d77bf3;
+  color: rgb(3, 3, 3);
+  padding: 10px 10px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: block;
+}
