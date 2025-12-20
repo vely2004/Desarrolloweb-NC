@@ -1,0 +1,97 @@
+/* ESTILOS GENERALES*/
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: lch(89.61% 6.92 19.81);
+}
+
+/* BOTÓN PRINCIPAL (sobrescribe Bootstrap)*/
+
+.btn-primary {
+    background-color: hsl(330, 100%, 72%);
+    border-color: #fd70c7;
+    border-radius: 30px;
+    padding: 10px 25px;
+    transition: all 0.3s ease;
+}
+
+/* Hover con animación */
+.btn-primary:hover {
+    background-color: #dd079d;
+    border-color: hsl(325, 97%, 56%);
+    transform: scale(1.05);
+}
+
+/* BOTÓN SECUNDARIO*/
+
+.btn-secondary {
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    transform: scale(1.05);
+}
+
+/*TARJETAS DE PRODUCTOS */
+
+.card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(26, 26, 26, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover en tarjetas */
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgba(39, 39, 39, 0.15);
+}
+
+/* IMÁGENES*/
+
+.card-img-top {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+/*  FORMULARIO */
+
+form {
+    background-color: hwb(335 90% 5%);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* FOOTER */
+
+footer {
+    border-top: 1px solid lab(77.03% 30.49 -6.46);
+}
+
+footer a {
+    color: lab(64.37% 74.78 -33.85);
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: hsl(315, 96%, 68%);
+}
+
+/*MEDIA QUERY (pantallas pequeñas)*/
+
+@media (max-width: 576px) {
+    body {
+        background-color: lch(89.61% 6.92 19.81);
+    }
+
+    .btn-primary {
+        background-color: #d63384;
+        border-color: #d63384;
+    }
+
+    footer {
+        background-color: #ffffff;
+    }
+}
