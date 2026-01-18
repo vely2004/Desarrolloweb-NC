@@ -1,0 +1,71 @@
+body {
+    font-family: 'Times New Roman', Times, serif, sans-serif;
+    background-color: #f4f6f8;
+    padding: 30px;
+}
+h2 {
+    text-align: center;
+    color:rgb(171, 62, 235);
+}
+
+form {
+    background: rgb(212, 208, 208);
+    padding: 30px;
+    max-width: 400px;
+    margin: auto;
+    border-radius: 8px;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+}
+
+input.valido {
+    border-color: green;
+}
+
+input.invalido {
+    border-color: red;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+}
+
+.botones {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#btnEnviar:disabled {
+    background-color: rgb(184, 120, 197);
+    cursor: not-allowed;
+}
+
+#btnEnviar {
+    background-color: #28a745;
+    color: white;
+}
+
+button[type="reset"] {
+    background-color: #dc3545;
+    color: white;
+}
