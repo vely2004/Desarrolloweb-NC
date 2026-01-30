@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Catálogo de tienda Velsh</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!--Navbar--->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <!---Logo de la tienda online--->
+        <a class="navbar-brand" href="#">Velsh
+        <img src="assets/logo_tienda.png" alt="fondo Velsh" height="40">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menu">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" href="#labios">Labios</a></li>
+                <li class="nav-item"><a class="nav-link" href="#Ojos">Ojos</a></li>
+                <li class="nav-item"><a class="nav-link" href="#rostro">Rostro</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contactForm">Pedidos</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!--PROMOCIONES--->
+<div id="promotienda" class="carousel slide mb-5" data-bs-ride="carousel">
+
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#promotienda" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#promotienda" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#promotienda" data-bs-slide-to="2"></button>
+    </div>
+
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="assets/gloss_shush.jpg" class="d-block w-100" alt="Gloss Shush">
+            <div class="carousel-caption bg-dark bg-opacity-50 rounded p-2">
+                <h3>Gloss Shush en Oferta</h3>
+                <p>Compra ahora y ahorra un 20%</p>
+            </div>
+        </div>
+
+        <div class="carousel-item">
+            <img src="assets/sombra_dreams.jpg" class="d-block w-100" alt="Sombras">
+            <div class="carousel-caption bg-dark bg-opacity-50 rounded p-2">
+                <h3>Sombras Dream</h3>
+                <p>Compra 2 y lleva 1 gratis</p>
+            </div>
+        </div>
+
+        <div class="carousel-item">
+            <img src="assets/Eyelure.jpg" class="d-block w-100" alt="Delineador">
+            <div class="carousel-caption bg-dark bg-opacity-50 rounded p-2">
+                <h3>Delineador EyeLure</h3>
+                <p>30% de descuento</p>
+            </div>
+        </div>
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#promotienda" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#promotienda" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+
+</div>
+
+<div class="container my-5">
+    <!-- TABLA DE PRODUCTOS -->
+     <!--productos para labios-->
+    <section id="labios" class="container my-5">
+<h2 class="text-center mb-4">Productos para Labios</h2>
+<p class="text-center">Glosses, bálsamos y labiales.</p>
+
+<div class="table-responsive">
+<table class="table table-striped table-hover text-center align-middle">
+    <thead class="table-danger">
+        <tr>
+            <th>Referencia</th>
+            <th>Producto</th>
+            <th>Tonos</th>
+            <th>Precio</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img src="assets/glow_rs.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+            <td>Lumi glow oil</td>
+            <td>Rose</td>
+            <td>$4</td>
+        </tr>
+        <tr>
+            <td><img src="assets/gloss_shush.jpg" width="100" class="img-fluid rounded shadow-sm"></td>
+            <td>Gloss Shush</td>
+            <td>Cherry, Peach Pop, Pink Cloud </td>
+            <td>$5</td>
+        </tr>
+        <tr>
+            <td><img src="assets/niv.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+            <td>Nivelle (semi-mate)</td>
+            <td>Coral, Rojo, Nude</td>
+            <td>$7</td>
+        </tr>
+         <tr>
+            <td><img src="assets/Syl.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+            <td>Syl (semi-mate)</td>
+            <td>Cherry</td>
+            <td>$7</td>
+        </tr>
+        <tr>
+            <td><img src="assets/balsamo_1.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+            <td>Straw ( Bálsamo de labios)</td>
+            <td>rojo suave</td>
+            <td>$1</td>
+        </tr>
+        <tr>
+            <td><img src="assets/balsamo_2.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+            <td>Cace</td>
+            <td>Humectante sin color</td>
+            <td>$1</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</section>
+<!--Productos para ojos-->
+<section id="Ojos" class="container my-5">
+<h2 class="text-center mb-4">Productos para Ojos</h2>
+<p class="text-center">Paleta de sombras, delineadores y rimeles.</p>
+
+<div class="table-responsive">
+<table class="table table-striped table-hover text-center align-middle">
+    <thead class="table-danger">
+        <tr>
+            <th>Referencia</th>
+            <th>Producto</th>
+            <th>Tipo</th>
+            <th>Precio</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><img src="assets/sombra_dreams.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+            <td> Dreams pink</td>
+            <td>Paleta de sombras</td>
+            <td>$10</td>
+        </tr>
+        <tr>
+            <td><img src="assets/Lilac_.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+            <td>Lilac glow</td>
+            <td>Paleta de sombras</td>
+            <td>$7</td>
+        </tr>
+        <tr>
+            <td><img src="assets/paleta_3.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+            <td>Soft glow</td>
+            <td>Paleta de sombras</td>
+            <td>$7</td>
+        </tr>
+        <tr>
+            <td><img src="assets/EyeLure.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+            <td>EyeLure</td>
+            <td>Delineador</td>
+            <td>$3</td>
+        </tr>
+        <tr>
+            <td><img src="assets/delineador_2.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+            <td>Sheglam</td>
+            <td>Delineador de punta curva</td>
+            <td>$5</td>
+        </tr>
+        <tr>
+            <td><img src="assets/delineador_3.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+            <td>Sheglam</td>
+            <td>Delineador de fácil agarre</td>
+            <td>$4</td>
+        </tr>
+        <tr>
+            <td><img src="assets/rimel_1.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+            <td>Suake Volume</td>
+            <td>Rimel (café/negro)</td>
+            <td>$7.80</td>
+        </tr>
+        <tr>
+            <td><img src="assets/rimel_2.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+            <td>susker</td>
+            <td>Rimel (negro)</td>
+            <td>$5.50</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</section>
+<!--Productos para rostro-->
+<section id="rostro" class="container my-5">
+<h2 class="text-center mb-4">Productos para Rostro</h2>
+<p class="text-center">Bases, correctores, rubores y más.</p>
+
+<div class="table-responsive">
+<table class="table table-striped table-hover text-center align-middle">
+    <thead class="table-danger">
+         <tr>
+            <th>Referencia</th>
+            <th>Producto</th>
+            <th>Tipo</th>
+            <th>Tonos</th>
+            <th>Precio</th>
+         </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><img src="assets/base_1.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+                <td>Base profles</td>
+                <td>Base</td>
+                <td><img src="assets/tonos_b1.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+                <td>$12</td>
+            </tr>
+            <tr>
+                <td><img src="assets/corrector_1.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+                <td>SHSH</td>
+                <td>Corrector de ojeras</td>
+                <td><img src="assets/tonos_corrector.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+                <td>$8</td>
+            </tr>
+            <tr>
+                <td><img src="assets/rubor_1.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+                <td>Rubor Bisú</td>
+                <td>Rubor líquido</td>
+                <td>Rosa, Coral, Nude, Rosa Fambruesa </td>
+                <td>$5.50</td>
+            </tr>
+            <tr>
+                <td><img src="assets/rubor_2.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+                <td>Rubor Sheglam</td>
+                <td>Rubor líquido</td>
+                <td>Rosa, Coral, Rosa Fambruesa </td>
+                <td>$4.50</td>
+            </tr>
+            <tr>
+                <td><img src="assets/rubor_3.jpg" width="70" class="img-fluid rounded shadow-sm"></td>
+                <td>Rubor Sheglam</td>
+                <td>Rubor en polvo</td>
+                <td>Rosa, Coral, Rosa Fambruesa </td>
+                <td>$3.50</td>
+            </tr>
+
+        </tbody>
+</table>  
+</div>     
+</section>
+ <!-- FORMULARIO / Pedidos-->
+<section id="contactForm" class="container my-5">
+  <h2 class="text-center mb-4">Pedidos</h2>
+
+  <form id="contactForm" novalidate>
+
+    <div id="formAlert" class="alert alert-danger d-none mt-3" role="alert"></div>
+    
+    <!-- Nombre -->
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre</label>
+      <input type="text" class="form-control" id="nombre" placeholder="Ingresa tu nombre">
+      <div class="text-danger small" id="errorNombre"></div>
+    </div>
+    <!-- Email -->
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" placeholder="ejemplo@email.com">
+      <div class="text-danger small" id="errorEmail"></div>
+    </div>
+     <!-- Número celular -->
+    <div class="mb-3">
+      <label for="celular" class="form-label">Número de celular</label>
+      <input type="tel" class="form-control" id="celular" placeholder="0936247785">
+      <div class="text-danger small" id="errorCelular"></div>
+    </div>
+    <!-- Producto que desea -->
+    <div class="mb-3">
+      <label class="form-label">Producto que desea</label>
+      <textarea class="form-control" id="producto" rows="3"></textarea>
+      <div class="text-danger small" id="errorProducto"></div>
+    </div>
+
+<!-- Dirección de entrega -->
+    <div class="mb-3">
+      <label for="direccion" class="form-label">Dirección de entrega</label>
+      <input type="text" class="form-control" id="direccion">
+      <div class="text-danger small" id="errorDireccion"></div>
+    </div>
+
+    <p class="text-muted small">
+      <em>La entrega se realiza en la dirección indicada y se confirmará el pedido por WhatsApp.</em>
+    </p>
+
+<!-- Botón -->
+    <button type="submit" class="btn btn-primary">Enviar</button>
+    <button type="reset" class="btn btn-secondary">Reiniciar</button>
+
+  </form>
+</section>
+<!--- PIE DE PÁGINA -->
+<footer class="text-center bg-light py-4 mt-5">
+            <p class="mb-2">
+              <strong>Velsh</strong> – Tienda de maquillaje
+            </p>
+
+            <p class="text-muted small mb-0">
+               © 2026 Velsh. Todos los derechos reservados.
+            </p>
+        </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
