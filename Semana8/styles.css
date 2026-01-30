@@ -44,7 +44,7 @@ h2 {
 
 /* Mouse */
 .table.table-hover tbody tr:hover > * {
-    background-color: hsl(22, 92%, 85%) !important;
+    background-color: hsl(21, 92%, 85%) !important;
     color: #000 !important;
 }
 
