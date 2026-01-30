@@ -2,7 +2,25 @@ body {
     font-family: 'Times New Roman', Times, serif, sans-serif;
     background-color: #d1d3d4;
 }
+#promotienda {
+    max-width: 900px;
+    margin: 30px auto;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+}
 
+#promotienda img {
+    height: 380px;
+    object-fit: cover;
+}
+
+/* En móviles */
+@media (max-width: 768px) {
+    #promotienda img {
+        height: 220px;
+    }
+}
 /* TITULOS */
 h2 {
     text-align: center;
@@ -13,7 +31,7 @@ h2 {
 
 /* NAVBAR */
 .navbar {
-    background-color: #ff4f7a !important;
+    background-color: #f89cb3 !important;
 }
 
 /* TABLAS */
@@ -78,10 +96,18 @@ form {
 
 /* FOOTER */
 footer {
-    background-color: #cec9c9;
-    color: rgb(15, 15, 15);
-    padding: 20px;
-    text-align: center;
-    margin-top: 40px;
+    background-color: #f7aac9 !important;
+    color: rgb(12, 12, 12) !important;
 }
+
+footer p {
+    margin: 0;
+    font-weight: 500;
+}
+
+footer strong {
+    color: #111111;
+    font-size: 18px;
+}
+
 
