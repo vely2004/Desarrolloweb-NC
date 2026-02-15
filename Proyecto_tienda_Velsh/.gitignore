@@ -1,0 +1,13 @@
+# Entorno virtual
+venv/
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+
+# Variables de entorno (si las usas después)
+.env
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
