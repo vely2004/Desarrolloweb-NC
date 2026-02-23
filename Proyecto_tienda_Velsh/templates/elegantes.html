@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Elegantes{% endblock %}
+
+{% block content %}
+<h2 class="text-center my-4">Elegantes</h2>
+<div class="row">
+     <!--Producto 1-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img7.jpg') }}" class="card-img-top img-fluid" alt="Maryjean altos">
+            <div class="card-body">
+                <h3>Zapatos Maryjean Altos</h3>
+                <p class="card-text">
+                    Tallas: 36, 37, 38, 39 <br>
+                    Color: Negro<br>
+                    Precio: <strong>$35</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Zapatos Maryjean Altos') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+
+     <!--Producto 2-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img8.jpg') }}" class="card-img-top img-fluid" alt="Tacones punta">
+            <div class="card-body">
+                <h3>Tacones Puntiagudos con lazo</h3>
+                <p class="card-text">
+                    Tallas: 36, 37, 38 <br>
+                    Color: único<br>
+                    Precio: <strong>$23</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Tacones Puntiagudos con lazo') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+
+     <!--Producto 3-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img9.jpg') }}" class="card-img-top img-fluid" alt="maryjeans">
+            <div class="card-body">
+                <h3>Maryjeans mediano-bajo </h3>
+                <p class="card-text">
+                    Tallas: 36, 37, 38 <br>
+                    Color: Negro, Rojo<br>
+                    Precio: <strong>$25</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Maryjeans mediano-bajo') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+     <!--Producto 4-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img10.jpg') }}" class="card-img-top img-fluid" alt="tacones">
+            <div class="card-body">
+                <h3>Stiletto lace-up heel</h3>
+                <p class="card-text">
+                    Tallas: 36, 37, 38 <br>
+                    Color: Negro, Rojo, Azul, Blanco<br>
+                    Precio: <strong>$20</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Stiletto lace-up heel') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+    
+     <!--Producto 5-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img11.jpg') }}" class="card-img-top img-fluid" alt="tacones2">
+            <div class="card-body">
+                <h3>Tacón de aguja - Shak</h3>
+                <p class="card-text">
+                    Tallas: 36, 37, 38 <br>
+                    Color: Negro, Rojo, Azul<br>
+                    Precio: <strong>$20</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Tacón de aguja - Shak') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+
+     <!--Producto 6-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img12.jpg') }}" class="card-img-top img-fluid" alt="tacones3">
+            <div class="card-body">
+                <h3>Butterfly</h3>
+                <p class="card-text">
+                    Tallas: 36, 37, 38<br>
+                    Color: Dorado, Plateado<br>
+                    Precio: <strong>$23</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Butterfly') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

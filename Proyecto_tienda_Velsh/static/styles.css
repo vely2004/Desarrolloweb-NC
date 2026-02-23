@@ -1,0 +1,158 @@
+body {
+    font-family: 'Times New Roman', serif; 
+    font-size: 20px;                       
+    background-color: hwb(342 64% 12%);             
+    color: #030303;                        
+    line-height: 1.6;                       
+    margin: 0;
+    padding: 0;
+}
+
+/* Encabezados */
+h2, h3 {
+    font-weight: 600;                       
+    margin-bottom: 1rem;                    
+}
+
+/* Párrafos */
+p {
+    font-size: 1rem;                        
+    margin-bottom: 1rem;                    
+}
+
+/*  Centrado */
+.text-center {
+    text-align: center;
+}
+
+/*Logo*/
+.logo-text p {
+    font-size: 20px;
+}
+.logo-container img {
+    border: 3px solid #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    object-fit: cover;
+    transition: transform 0.3s;
+    border-radius: 50%;                    
+}
+
+.logo-container img:hover {
+    transform: scale(1.05);               
+}
+/* Párrafo debajo del logo */
+.logo-text {
+    margin-top: 15px;
+    font-size: 30px;                        
+    color: #0e0d0d;
+    text-align: center;
+}
+
+/*Cards (productos) */
+.card {
+    border: none;
+    border-radius: 20px;
+    background-color: hsl(305, 73%, 83%);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover en tarjetas */
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgba(56, 54, 54, 0.15);
+}
+
+/* IMÁGENES*/
+
+.card-img-top {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+/*Media QUERY( pntallas pequeñas)*/
+@media (max-width: 576px) {
+    .card {
+        margin-bottom: 20px;
+    }
+
+    .logo-text {
+        font-size: 18px;
+    }
+}
+/* Botones */
+.btn-primary {
+    background-color: #a356b6;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #661c75;
+}
+
+/* Carrusel */
+#promotienda .carousel-item img {
+    width: auto;      
+    max-height: 500px; 
+    object-fit: cover;
+    border-radius: 10px;  
+}
+/* Responsivo */
+@media (max-width: 768px) {
+    .card-body h3 {
+        font-size: 1rem;
+    }
+
+    .card-body p {
+        font-size: 0.9rem;
+    }
+
+    .logo-text {
+        font-size: 13px;
+    }
+}
+/*  SECCIÓN FORMULARIO*/
+
+.form-section {
+    max-width: 550px;          
+    margin: 60px auto;   
+    background-color: #af709a;      
+    padding: 40px;             
+    border-radius: 20px;       
+    box-shadow: 0 10px 30px rgba(2, 2, 2, 0.15); 
+}
+/* Botón */
+.form-section .btn {
+    border-radius: 12px;
+    padding: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.form-section .btn:hover {
+    transform: scale(1.03);
+}
+
+/*links*/
+a {
+    color: #a663bb;   /* rosado moderno */
+    text-decoration: none;
+}
+
+a:hover {
+    color: #5b2b5f;   /* más oscuro al pasar el mouse */
+}
+/* FOOTER */
+footer {
+    background-color: #d699bf !important;
+    color: rgb(12, 12, 12) !important;
+}
+
+footer p {
+    margin: 0;
+    font-weight: 500;
+}
+
+footer strong {
+    color: #111111;
+    font-size: 18px;
+}

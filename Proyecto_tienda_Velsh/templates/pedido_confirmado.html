@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Pedido Confirmado{% endblock %}
+{% block content %}
+
+<div class="container text-center mt-5">
+<h2>¡Gracias {{ nombre }}!</h2>
+<p>Tu pedido de <strong>{{ producto }}</strong> ha sido registrado.</p>
+<p>Nos pondremos en contacto contigo para coordinar la entrega.</p>
+
+<a href="{{ url_for('index') }}" class="btn btn-success mt-3">
+Volver al catálogo
+</a>
+</div>
+
+{% endblock %}

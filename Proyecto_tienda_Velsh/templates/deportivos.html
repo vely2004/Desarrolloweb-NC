@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Deportivos{% endblock %}
+
+{% block content %}
+<h2 class="text-center my-4">Deportivos</h2>
+<div class="row">
+    <!-- Producto 1 -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img1.jpg') }}" class="card-img-top img-fluid" alt="Zapatos lovito">
+            <div class="card-body">
+                <h3>Zapatos Lovito</h3>
+                <p class="card-text">
+                    Tallas: 37, 38, 39, 40 <br>
+                    Color: único <br>
+                    Precio: <strong>$23</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Zapatos Lovito') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Producto 2 -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img2.jpg') }}" class="card-img-top img-fluid" alt="Zapatos star">
+            <div class="card-body">
+                <h3>Zapatos Star</h3>
+                <p class="card-text">
+                    Tallas: 36, 37, 38, 39 <br>
+                    Color: único <br>
+                    Precio: <strong>$20</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Zapatos Star') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+    <!---Producto 3-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img3.jpg') }}" class="card-img-top img-fluid" alt="Zapatos strawberry">
+            <div class="card-body">
+                <h3>Zapatos Frek</h3>
+                <p class="card-text">
+                    Tallas: 35, 36, 37, 38, 39 <br>
+                    Color: único <br>
+                    Precio: <strong>$27</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Zapatos Frek') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+    <!--Producto 4-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img4.jpg') }}" class="card-img-top img-fluid" alt="Zapatos sport">
+            <div class="card-body">
+                <h3>Zapatos Jordan</h3>
+                <p class="card-text">
+                    Tallas: 37, 38, 39 <br>
+                    Color: Negro, Rojo <br>
+                    Precio: <strong>$23</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Zapatos Jordan') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+
+    <!--Producto 5-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img5.jpg') }}" class="card-img-top img-fluid" alt="Zapatos fila">
+            <div class="card-body">
+                <h3>Zapatos Fila</h3>
+                <p class="card-text">
+                    Tallas: 36, 37, 38, 39 <br>
+                    Color: Blanco, Negro <br>
+                    Precio: <strong>$23</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Zapatos Fila') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+     <!--Producto 6-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img6.jpg') }}" class="card-img-top img-fluid" alt="Zapatos converse">
+            <div class="card-body">
+                <h3>Zapatos Converse</h3>
+                <p class="card-text">
+                    Tallas: 36, 37, 38, 39 <br>
+                    Color: Blanco, Negro, Azul, Lila <br>
+                    Precio: <strong>$20</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Zapatos Converse') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Botas{% endblock %}
+
+{% block content %}
+<h2 class="text-center my-4">Botas</h2>
+<div class="row">
+     <!--Producto 1-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img13.jpg') }}" class="card-img-top img-fluid" alt="botas1">
+            <div class="card-body">
+                <h3>Botas Zhurk</h3>
+                <p class="card-text">
+                    Tallas: 35, 36, 37, 38, 39 <br>
+                    Color: Negro, Marrón<br>
+                    Precio: <strong>$35</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Botas Zhurk') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+
+     <!--Producto 2-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img14.jpg') }}" class="card-img-top img-fluid" alt="botas2">
+            <div class="card-body">
+                <h3>Botas Star</h3>
+                <p class="card-text">
+                    Tallas: 37, 38, 39 <br>
+                    Color: único<br>
+                    Precio: <strong>$40</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Botas Star') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+
+    <!--Producto 3-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img15.jpg') }}" class="card-img-top img-fluid" alt="botas3">
+            <div class="card-body">
+                <h3>Botas Rider</h3>
+                <p class="card-text">
+                    Tallas: 37, 38, 39 <br>
+                    Color: Negro, Marrón<br>
+                    Precio: <strong>$35</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Botas Rider') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+
+    <!--Producto 4-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img16.jpg') }}" class="card-img-top img-fluid" alt="botas4">
+            <div class="card-body">
+                <h3>Botas Whuish</h3>
+                <p class="card-text">
+                    Tallas: 35, 36, 37, 38, 39, 40 <br>
+                    Color: Blanco, Negro, Marrón, Beige<br>
+                    Precio: <strong>$25</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Botas Whuish') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+
+    <!--Producto 5-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img17.jpg') }}" class="card-img-top img-fluid" alt="botas5">
+            <div class="card-body">
+                <h3>Botas Bratz</h3>
+                <p class="card-text">
+                    Tallas: 36, 37, 38, 39 <br>
+                    Color: único<br>
+                    Precio: <strong>$50</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Botas Bratz') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+
+    <!--Producto 6-->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <img src="{{ url_for('static', filename='img/img18.jpg') }}" class="card-img-top img-fluid" alt="botas6">
+            <div class="card-body">
+                <h3>Botas Charol</h3>
+                <p class="card-text">
+                    Tallas: 36, 37, 38, 39 <br>
+                    Color: único<br>
+                    Precio: <strong>$30</strong>
+                </p>
+                <a href="{{ url_for('pedido', producto='Botas Charol') }}" class="btn btn-primary">Hacer pedido</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
