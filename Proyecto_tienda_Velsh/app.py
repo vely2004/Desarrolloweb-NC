@@ -49,6 +49,6 @@ def pedido():
 def contacto():
     return render_template("contacto.html")
 
-
+# Ruta
 if __name__ == '__main__':
     app.run(debug=True)
