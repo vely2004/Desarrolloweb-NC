@@ -4,101 +4,34 @@
 
 {% block content %}
 <h2 class="text-center my-4">Mocasines</h2>
+
 <div class="row">
-     <!--Producto 1-->
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='img/img19.jpg') }}" class="card-img-top img-fluid" alt="cas1">
-            <div class="card-body">
-                <h3>Mocasines Vik</h3>
-                <p class="card-text">
-                    Tallas: 35, 36, 37, 38, 39 <br>
-                    Color: Negro<br>
-                    Precio: <strong>$15</strong>
-                </p>
-                <a href="{{ url_for('pedido', producto='Mocasines Vik') }}" class="btn btn-primary">Hacer pedido</a>
-            </div>
-        </div>
-    </div>
+    {% if productos_categoria %}
+        {% for p in productos_categoria %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ url_for('static', filename=p.imagen) if p.imagen else url_for('static', filename='img/default.jpg') }}"
+                         class="card-img-top img-fluid"
+                         alt="{{ p.nombre }}">
 
-     <!--Producto 2-->
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='img/img20.jpg') }}" class="card-img-top img-fluid" alt="cas2">
-            <div class="card-body">
-                <h3>Luxe Buckle</h3>
-                <p class="card-text">
-                    Tallas: 35, 36, 37, 38, 39 <br>
-                    Color: Negro<br>
-                    Precio: <strong>$20</strong>
-                </p>
-                <a href="{{ url_for('pedido', producto='Mocasines Luxe Buckle') }}" class="btn btn-primary">Hacer pedido</a>
-            </div>
-        </div>
-    </div>
+                    <div class="card-body">
+                        <h3>{{ p.nombre }}</h3>
 
-     <!--Producto 3-->
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='img/img21.jpg') }}" class="card-img-top img-fluid" alt="cas3">
-            <div class="card-body">
-                <h3>Mocasines Nanno</h3>
-                <p class="card-text">
-                    Tallas: 35, 36, 37, 38, 39 <br>
-                    Color: Negro, Marrón, Vino<br>
-                    Precio: <strong>$25</strong>
-                </p>
-                <a href="{{ url_for('pedido', producto='Mocasines Nanno') }}" class="btn btn-primary">Hacer pedido</a>
-            </div>
-        </div>
-    </div>
+                        <p class="card-text">
+                            Talla: {{ p.talla or 'Única' }} <br>
+                            Color: {{ p.color or 'Único' }} <br>
+                            Precio: <strong>${{ p.precio }}</strong>
+                        </p>
 
-     <!--Producto 4-->
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='img/img22.jpg') }}" class="card-img-top img-fluid" alt="cas4">
-            <div class="card-body">
-                <h3>Mocasines Shaki</h3>
-                <p class="card-text">
-                    Tallas: 35, 36, 37, 38, 39 <br>
-                    Color: Negro, Vino<br>
-                    Precio: <strong>$20</strong>
-                </p>
-                <a href="{{ url_for('pedido', producto='Mocasines Shaki') }}" class="btn btn-primary">Hacer pedido</a>
+                        <a href="{{ url_for('pedido', producto=p.nombre) }}" class="btn btn-primary">
+                            Hacer pedido
+                        </a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-
-     <!--Producto 5-->
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='img/img23.jpg') }}" class="card-img-top img-fluid" alt="cas5">
-            <div class="card-body">
-                <h3>Mocasines Vusher</h3>
-                <p class="card-text">
-                    Tallas: 35, 36, 37, 38, 39 <br>
-                    Color: único<br>
-                    Precio: <strong>$23</strong>
-                </p>
-                <a href="{{ url_for('pedido', producto='Mocasines Vusher') }}" class="btn btn-primary">Hacer pedido</a>
-            </div>
-        </div>
-    </div>
-
-    <!--Producto 6-->
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            <img src="{{ url_for('static', filename='img/img24.jpg') }}" class="card-img-top img-fluid" alt="cas6">
-            <div class="card-body">
-                <h3>Mocasines Paris</h3>
-                <p class="card-text">
-                    Tallas: 35, 36, 37, 38, 39 <br>
-                    Color: único<br>
-                    Precio: <strong>$23</strong>
-                </p>
-                <a href="{{ url_for('pedido', producto='Mocasines Paris') }}" class="btn btn-primary">Hacer pedido</a>
-            </div>
-        </div>
-    </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-center">No hay productos disponibles en esta categoría.</p>
+    {% endif %}
 </div>
 {% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Todos los Productos{% endblock %}
+
+{% block content %}
+
+<h2>Inventario Completo</h2>
+
+<p>
+    <a href="{{ url_for('admin') }}">
+        <button type="button">Volver al panel principal</button>
+    </a>
+</p>
+
+{% if productos %}
+<table border="1">
+<tr>
+    <th>ID</th>
+    <th>Nombre</th>
+    <th>Cantidad</th>
+    <th>Precio</th>
+    <th>Categoría</th>
+    <th>Talla</th>
+    <th>Color</th>
+    <th>Imagen</th>
+</tr>
+
+{% for p in productos %}
+<tr>
+    <td>{{ p.id_producto }}</td>
+    <td>{{ p.nombre }}</td>
+    <td>{{ p.cantidad }}</td>
+    <td>${{ p.precio }}</td>
+    <td>{{ p.categoria }}</td>
+    <td>{{ p.talla or 'N/A' }}</td>
+    <td>{{ p.color or 'N/A' }}</td>
+    <td>
+        {% if p.imagen %}
+            <img src="{{ url_for('static', filename=p.imagen) }}" width="60">
+        {% else %}
+            Sin imagen
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% else %}
+<p>No hay productos en el inventario.</p>
+{% endif %}
+
+{% endblock %}

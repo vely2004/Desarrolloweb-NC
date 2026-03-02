@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Panel de Administración{% endblock %}
+
+{% block content %}
+<h2>Panel de Administración</h2>
+
+<!-- Menú de subrutas -->
+<ul>
+    <li><a href="{{ url_for('admin_añadir') }}">Añadir producto</a></li>
+    <li><a href="{{ url_for('admin_eliminar') }}">Eliminar producto</a></li>
+    <li><a href="{{ url_for('admin_actualizar') }}">Actualizar producto</a></li>
+    <li><a href="{{ url_for('admin_buscar') }}">Buscar producto</a></li>
+    <li><a href="{{ url_for('admin_mostrar') }}">Mostrar Productos</a></li>
+    <li><a href="{{ url_for('logout') }}">Cerrar sesión</a></li>
+</ul>
+
+<!-- Mostrar mensaje opcional -->
+{% if mostrar_login %}
+    <p>{{ mensaje }}</p>
+{% endif %}
+
+<!-- Tabla de productos (si se pasa desde Flask) -->
+{% if productos %}
+<h3>Inventario Actual</h3>
+<table border="1">
+<tr>
+    <th>ID</th>
+    <th>Nombre</th>
+    <th>Cantidad</th>
+    <th>Precio</th>
+    <th>Categoría</th>
+</tr>
+{% for p in productos %}
+<tr>
+    <td>{{ p.id_producto }}</td>
+    <td>{{ p.nombre }}</td>
+    <td>{{ p.cantidad }}</td>
+    <td>${{ p.precio }}</td>
+    <td>{{ p.categoria }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}
