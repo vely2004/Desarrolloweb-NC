@@ -1,17 +1,42 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from datetime import timedelta
-import sqlite3
+from form import PedidoForm
+from inventario.bd import db, Cliente, ProductoDB
+from inventario.inventario import Inventario
+from inventario.productos import Producto
+
+import json
+import csv
 import os
+
+#--- Inicializar app---
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///inventario.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "super_secret_key"
 app.permanent_session_lifetime = timedelta(minutes=15)
-# Ruta de inicio
+
+
+#inicar AQLAlchemy
+db.init_app(app)
+
+
+
+#--- Archivos para guardar pedidos---
+txt_file = "inventario/data/datos.txt"
+json_file = "inventario/data/datos.json"
+csv_file = "inventario/data/datos.csv"
+
+
+#<<<<<<<<<<<<<<<<<<<< Rutas>>>>>>>>>>>>>>>>>>>>>>>
+
+#---Ruta principal---
 @app.route('/')
 def inicio():
     productos = inventario.mostrar_productos()
     return render_template("index.html", productos=productos)
 
-# Rutas por categorías 
+#--- Rutas por categorías ---
 @app.route('/categoria/<tipo>')
 def categoria(tipo):
     # Filtrar productos según la categoría (insensible a mayúsculas)
@@ -32,225 +57,74 @@ def categoria(tipo):
         return render_template(plantillas[tipo.lower()], productos_categoria=productos_categoria)
     else:
         return "Categoría no encontrada", 404
-#otras rutas    
+#---Ruta about---
 @app.route('/about')
 def about():
     return render_template("about.html")
-
+#---Ruta ofertas---
 @app.route('/ofertas')
 def ofertas():
     return render_template("ofertas.html")
 
+#---Ruta pedido---
 @app.route('/pedido', methods=['GET', 'POST'])
 def pedido():
-    if request.method == 'POST':
-        nombre = request.form['nombre']
-        email = request.form['email']
-        celular = request.form['celular']
-        direccion = request.form['direccion']
-        producto = request.form['producto']
 
-        # Guardar en base de datos
-        conn = sqlite3.connect('inventario.db')
-        cursor = conn.cursor()
-        cursor.execute('''
-            INSERT INTO clientes (nombre, email, celular, direccion, producto)
-            VALUES (?, ?, ?, ?, ?)
-            ''', (nombre, email, celular, direccion, producto))
-        conn.commit()
-        conn.close()
+    form = PedidoForm()  # <-- formulario
+    
+    if form.validate_on_submit():  # <-- Validación del formulario
+        # datos del formulario
+        nombre = form.nombre.data
+        email = form.email.data
+        celular = form.celular.data
+        direccion = form.direccion.data
+        producto = form.producto.data
 
-        return render_template(
-            "pedido_confirmado.html",
-            nombre=nombre,
-            producto=producto
+        # -- SQLITE  con SQLalchemy--
+        nuevo_cliente = Cliente(
+        nombre=nombre,
+        email=email,
+        celular=celular,
+        direccion=direccion,
+        producto=producto
         )
-    return render_template("pedido.html")
+        db.session.add(nuevo_cliente)
+        db.session.commit()
 
+        # -- TXT --
+        with open("inventario/data/datos.txt", "a", encoding="utf-8") as f:
+            f.write(f"{nombre},{email},{celular},{direccion},{producto}\n")
+
+        # -- JSON --
+        pedido_dict = {
+            "nombre": nombre,
+            "email": email,
+            "celular": celular,
+            "direccion": direccion,
+            "producto": producto
+        }
+        with open(json_file,"r", encoding="utf-8") as f:
+            datos = json.load(f)
+        datos.append(pedido_dict)
+        with open(json_file,"w", encoding="utf-8") as f:
+            json.dump(datos,f,indent=4)
+
+        # -- CSV --
+        with open(csv_file, "a", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow([nombre, email, celular, direccion, producto])
+
+        # Mostrar confirmación
+        return render_template("pedido_confirmado.html", nombre=nombre, producto=producto)
+
+    return render_template("pedido.html", form=form)
+
+#---Ruta contacto---
 @app.route('/contacto')
 def contacto():
     return render_template("contacto.html")
 
-# ---- Inicializar DB ----
-def inicializar_db():
-    conn = sqlite3.connect("inventario.db")
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS productos (
-            id_producto TEXT PRIMARY KEY,
-            nombre TEXT NOT NULL,
-            cantidad INTEGER NOT NULL,
-            precio REAL NOT NULL,
-            categoria TEXT,
-            talla INTEGER,
-            color TEXT
-        )
-    """)
 
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS clientes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nombre TEXT,
-            email TEXT,
-            celular TEXT,
-            direccion TEXT,
-            producto TEXT
-        )
-    """)
-    conn.commit()
-    conn.close()
-
-#Clase producto
-class Producto:
-    def __init__(self, id_producto, nombre, cantidad, precio, categoria, talla, color,imagen):
-        self.id_producto = id_producto
-        self.nombre = nombre
-        self.cantidad = cantidad
-        self.precio = precio
-        self.categoria = categoria
-        self.talla = talla
-        self.color = color
-        self.imagen = imagen
-
-    # actualizar cantidad administrador
-    def actualizar_cantidad(self, nueva_cantidad):
-        self.cantidad = nueva_cantidad
-
-    def actualizar_precio(self, nuevo_precio):
-        self.precio = nuevo_precio
-
-    def actualizar_categoria(self, categoria):
-        self.categoria = categoria
-
-    def actualizar_talla(self, talla):
-        self.talla = talla
-
-    def actualizar_color(self, color):
-        self.color = color
-
-    def __str__(self):
-        return f"ID: {self.id_producto}, Nombre: {self.nombre}, Cantidad: {self.cantidad}, Precio: ${self.precio:.2f}, Categoria: {self.categoria}, Talla: {self.talla}, Color: {self.color}, imagen: {self.imagen}"
-    
-# Clase Inventario usando diccionario y sqsl
-class Inventario:
-    def __init__(self):
-        self.productos = {}
-    
-#Crear tabla productos
-    def crear_tabla(self):
-        conn = conectar_db()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS productos (
-                id_producto INTEGER PRIMARY KEY AUTOINCREMENT,
-                nombre TEXT,
-                cantidad INTEGER,
-                precio REAL,
-                categoria TEXT,
-                talla TEXT,
-                color TEXT,
-                imagen TEXT
-            )
-        """)
-
-        conn.commit()
-        conn.close()
-
-    # --- Operaciones en memoria + DB ---
-    def agregar_producto(self, producto):
-        self.guardar_producto_db(producto) 
-        self.productos[producto.id_producto] = producto
-
-    def eliminar_producto(self, id_producto):
-        if id_producto in self.productos:
-            del self.productos[id_producto]
-            self.eliminar_producto_db(id_producto)
-
-    def actualizar_producto(self, id_producto, cantidad, precio, categoria, talla, color, imagen):
-        if id_producto in self.productos:
-            prod = self.productos[id_producto]
-            if cantidad is not None: prod.actualizar_cantidad(cantidad)
-            if precio is not None: prod.actualizar_precio(precio)
-            if categoria is not None: prod.actualizar_categoria(categoria)
-            if imagen is not None: prod.imagen = imagen
-            if talla is not None: prod.actualizar_talla(talla)
-            if color is not None: prod.actualizar_color(color)
-            self.guardar_producto_db(prod)
-
-    # --- CRUD SQLite ---
-    def guardar_producto_db(self, producto):
-        conn = conectar_db()
-        cursor = conn.cursor()
-        cursor.execute("""
-            INSERT INTO productos (nombre, cantidad, precio, categoria, talla, color, imagen)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (
-            producto.nombre,
-            producto.cantidad,
-            producto.precio,
-            producto.categoria,
-            producto.talla,
-            producto.color,
-            producto.imagen
-        ))
-        conn.commit()
-        producto.id_producto = cursor.lastrowid
-        conn.close()
-
-    def eliminar_producto_db(self, id_producto):
-        conn = conectar_db()
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM productos WHERE id_producto = ?", (id_producto,))
-        conn.commit()
-        conn.close()
-
-    def cargar_productos_desde_db(self):
-        conn = conectar_db()
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM productos")
-        filas = cursor.fetchall()
-        for fila in filas:
-            prod = Producto(*fila)  
-            self.productos[prod.id_producto] = prod
-        conn.close()
-
-    def actualizar_producto_db(self, id_producto, nombre, cantidad, precio, categoria, talla, color):
-        conn = conectar_db()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            UPDATE productos
-            SET nombre = ?, cantidad = ?, precio = ?, categoria = ?, talla = ?, color = ?
-            WHERE id_producto = ?
-        """, (nombre, cantidad, precio, categoria, talla, color, id_producto))
-
-        conn.commit()
-        conn.close()
-
-    # --- Búsqueda y mostrar ---
-    def buscar_producto_db(self, nombre):
-        conn = conectar_db()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            SELECT * FROM productos
-            WHERE nombre LIKE ?
-        """, ('%' + nombre + '%',))
-
-        filas = cursor.fetchall()
-        conn.close()
-
-        productos_encontrados = []
-        for fila in filas:
-            prod = Producto(*fila)
-            productos_encontrados.append(prod)
-
-        return productos_encontrados
-    
-    def mostrar_productos(self):
-        self.cargar_productos_desde_db()
-        return self.productos.values()
     
 # --- Seguridad ---
 class Seguridad:
@@ -265,13 +139,8 @@ class Seguridad:
         )
 
 seguridad = Seguridad("Velsh", "0706194511")
-#conectar base de datos
-def conectar_db():
-    conn = sqlite3.connect("inventario.db")
-    conn.row_factory = sqlite3.Row
-    return conn
 
-#Ruta sesion de administrador
+#----Ruta sesion de administrador----
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -280,7 +149,7 @@ def login():
 
         if seguridad.verificar(usuario, contraseña):
             session["admin"] = True   # 🔐 
-            session.permanent = False  # Se cierra al cerrar navegador
+            session.permanent = False  
             return redirect(url_for("admin"))
         else:
             return "Usuario o clave incorrectos"
@@ -290,7 +159,7 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for("login"))
-#admin
+#_________Ruta administrador_________
 @app.route("/admin", methods=["GET", "POST"])
 def admin():
     # Si no hay sesión activa, redirige al login
@@ -306,7 +175,7 @@ def admin_mostrar():
     productos = inventario.mostrar_productos()
     return render_template("admin_productos.html", productos=productos)
 
-# Añadir nuevos productos
+# ---Ruta de admin para añadir productos---
 @app.route("/admin/añadir", methods=["GET", "POST"])
 def admin_añadir():
     mensaje = ""
@@ -325,10 +194,12 @@ def admin_añadir():
             return render_template("admin_añadir.html", mensaje=mensaje, productos=inventario.mostrar_productos())
         
         # Guardar imagen en la carpeta static/images
+
         ruta = os.path.join("static", "img", archivo.filename)
         archivo.save(ruta)
         imagen = f"img/{archivo.filename}"
-        #creación de producto
+
+        #creación de producto + DB
         producto = Producto(
             None, 
             nombre,
@@ -340,17 +211,16 @@ def admin_añadir():
             imagen
    )
         inventario.agregar_producto(producto)
+
         mensaje = "Producto agregado correctamente"
 
-         # Guardar ruta relativa para mostrar en HTML
-        imagen = f"img/{archivo.filename}" 
     return render_template(
         "admin_añadir.html",
         mensaje=mensaje,
         productos=inventario.mostrar_productos()
-        )
+    )
 
-# Eliminar productos por ID
+# ---Ruta de admin para eliminar productos---
 @app.route("/admin/eliminar", methods=["GET", "POST"])
 def admin_eliminar():
     mensaje = ""
@@ -361,8 +231,11 @@ def admin_eliminar():
         else:
             id_producto = int(id_str)
 
-            if inventario.eliminar_producto_db(id_producto):
+            # Verificar si existe en memoria
+            if id_producto in inventario.productos:
+                inventario.eliminar_producto(id_producto)  # Borra memoria + DB
                 mensaje = "Producto eliminado"
+
             else:
                 mensaje = "ID no encontrado"
 
@@ -371,7 +244,7 @@ def admin_eliminar():
         mensaje=mensaje,
         productos=inventario.mostrar_productos()
     )
-# Actualizar cantidad o precio( en este caso se actualizan todos los campos)
+# ---Ruta de admin para actualizar productos---
 @app.route("/admin/actualizar", methods=["GET", "POST"])
 def admin_actualizar():
     mensaje = ""
@@ -403,7 +276,7 @@ def admin_actualizar():
         productos=inventario.mostrar_productos()
     )
 
-# Buscar productos por nombre
+# ---Ruta de admin buscar productos---
 @app.route("/admin/buscar", methods=["GET", "POST"])
 def admin_buscar():
     productos = []
@@ -425,7 +298,7 @@ def admin_buscar():
         productos=productos,
         mensaje=mensaje
     )
-# Mostrar productos
+# ---Ruta de admin para mostrar productos---
 @app.route("/admin/productos")
 def admin_productos():
     productos = inventario.mostrar_productos()
@@ -434,8 +307,55 @@ def admin_productos():
         productos=productos
     )
 
+#---Ruta de admin para mostrar datos de pedidos---
+@app.route('/admin/datos')
+def mostrar_datos():
+     # --- Pedidos desde SQLite ---
+    pedidos_db = Cliente.query.all()  # Trae todos los pedidos de la base de datos
+    # Leer TXT
+    pedidos_txt = []
+    if os.path.exists(txt_file):
+        with open(txt_file, "r", encoding="utf-8") as f:
+            for linea in f:
+                if linea.strip():
+                    partes = linea.strip().split(",", 4)
+                    if len(partes) == 5:
+                        nombre, email, celular, direccion, producto = partes
+                        pedidos_txt.append({
+                        "nombre": nombre,
+                        "email": email,
+                        "celular": celular,
+                        "direccion": direccion,
+                        "producto": producto
+                    })
+
+    # Leer JSON
+    pedidos_json = []
+    if os.path.exists(json_file):
+        with open(json_file, "r", encoding="utf-8") as f:
+            pedidos_json = json.load(f)
+
+    # Leer CSV
+    pedidos_csv = []
+    if os.path.exists(csv_file):
+        with open(csv_file, "r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                pedidos_csv.append(row)
+
+    return render_template(
+        "datos.html",
+        pedidos_db=pedidos_db,
+        pedidos_txt=pedidos_txt,
+        pedidos_json=pedidos_json,
+        pedidos_csv=pedidos_csv
+    )
+
 if __name__ == "__main__":
     inventario = Inventario()
-    inventario.crear_tabla()
-    inventario.cargar_productos_desde_db()
+
+    with app.app_context():   # <-- Contexto de aplicación
+        inventario.crear_tabla(app)
+        inventario.cargar_productos_desde_db()
+
     app.run(debug=True)

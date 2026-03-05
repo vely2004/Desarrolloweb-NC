@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Datos de Pedidos{% endblock %}
+
+{% block content %}
+<h2>Datos de Pedidos</h2>
+
+#---Base de datos SQlite---
+<h2>Pedidos desde la Base de Datos (SQLite)</h2>
+<table border="1">
+<tr><th>Nombre</th><th>Email</th><th>Celular</th><th>Dirección</th><th>Producto</th></tr>
+{% for p in pedidos_db %}
+<tr>
+<td>{{ p.nombre }}</td>
+<td>{{ p.email }}</td>
+<td>{{ p.celular }}</td>
+<td>{{ p.direccion }}</td>
+<td>{{ p.producto }}</td>
+</tr>
+{% endfor %}
+</table>
+
+
+#---Archivos TXT, JSON y CSV---
+<h3>Pedidos desde TXT</h3>
+<table border="1">
+<tr>
+    <th>Nombre</th><th>Email</th><th>Celular</th><th>Dirección</th><th>Producto</th>
+</tr>
+{% for pedido in pedidos_txt %}
+<tr>
+    <td>{{ pedido.nombre }}</td>
+    <td>{{ pedido.email }}</td>
+    <td>{{ pedido.celular }}</td>
+    <td>{{ pedido.direccion }}</td>
+    <td>{{ pedido.producto }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h3>Pedidos desde JSON</h3>
+<table border="1">
+<tr>
+    <th>Nombre</th><th>Email</th><th>Celular</th><th>Dirección</th><th>Producto</th>
+</tr>
+{% for pedido in pedidos_json %}
+<tr>
+    <td>{{ pedido.nombre }}</td>
+    <td>{{ pedido.email }}</td>
+    <td>{{ pedido.celular }}</td>
+    <td>{{ pedido.direccion }}</td>
+    <td>{{ pedido.producto }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<h3>Pedidos desde CSV</h3>
+<table border="1">
+<tr>
+    <th>Nombre</th><th>Email</th><th>Celular</th><th>Dirección</th><th>Producto</th>
+</tr>
+{% for pedido in pedidos_csv %}
+<tr>
+    <td>{{ pedido.nombre }}</td>
+    <td>{{ pedido.email }}</td>
+    <td>{{ pedido.celular }}</td>
+    <td>{{ pedido.direccion }}</td>
+    <td>{{ pedido.producto }}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}
