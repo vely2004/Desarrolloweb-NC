@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Usuario{% endblock %}
+
+{%block content %}
+
+<h2>Cuenta de Usuario</h2>
+
+<!-- Menú de acción -->
+<ul>
+    <li><a href="{{ url_for('registro_usuario') }}">Registrarse</a></li>
+    <li><a href="{{ url_for('login_usuario') }}">Iniciar Sesión</a></li>
+</ul>
+
+{% endblock %}

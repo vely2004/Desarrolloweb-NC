@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Usuarios Registrados{% endblock %}
+
+{% block content %}
+<h2 class="text-center my-4">Usuarios Registrados</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Fecha de registro</th>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for u in usuarios %}
+        <tr>
+            <td>{{ u.id }}</td>
+        <td>{{ u.nombre }}</td>
+        <td>{{ u.mail }}</td>
+        <td>{{ u.fecha_registro }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

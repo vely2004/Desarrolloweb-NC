@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="text-center mt-5">Registro de Usuario</h2>
+
+{% if mensaje %}
+<p class="text-center text-success">{{ mensaje }}</p>
+{% endif %}
+
+<form method="POST" class="mx-auto mt-4" style="max-width: 400px;">
+    <div class="mb-3">
+        <label>Nombre:</label>
+        <input type="text" name="nombre" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Email:</label>
+        <input type="email" name="mail" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Contraseña:</label>
+        <input type="password" name="password" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+</form>
+
+<p class="text-center mt-3">
+    ¿Ya tienes cuenta? <a href="{{ url_for('login_usuario') }}">Inicia sesión aquí</a>
+</p>
+{% endblock %}

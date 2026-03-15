@@ -3,35 +3,48 @@
 {% block title %}Botas{% endblock %}
 
 {% block content %}
+
 <h2 class="text-center my-4">Botas</h2>
 
 <div class="row">
-    {% if productos_categoria %}
-        {% for p in productos_categoria %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img src="{{ url_for('static', filename=p.imagen) if p.imagen else url_for('static', filename='img/default.jpg') }}"
-                         class="card-img-top img-fluid"
-                         alt="{{ p.nombre }}">
 
-                    <div class="card-body">
-                        <h3>{{ p.nombre }}</h3>
+{% if productos_categoria %}
 
-                        <p class="card-text">
-                            Talla: {{ p.talla or 'Única' }} <br>
-                            Color: {{ p.color or 'Único' }} <br>
-                            Precio: <strong>${{ p.precio }}</strong>
-                        </p>
+    {% for p in productos_categoria %}
 
-                        <a href="{{ url_for('pedido', producto=p.nombre) }}" class="btn btn-primary">
-                            Hacer pedido
-                        </a>
-                    </div>
-                </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+
+            <img src="{{ url_for('static', filename=p['imagen']) if p['imagen'] else url_for('static', filename='img/default.jpg') }}"
+                 class="card-img-top img-fluid"
+                 alt="{{ p['nombre'] }}">
+
+            <div class="card-body">
+
+                <h3>{{ p['nombre'] }}</h3>
+
+                <p class="card-text">
+                    Talla: {{ p['talla'] or 'Única' }} <br>
+                    Color: {{ p['color'] or 'Único' }} <br>
+                    Precio: <strong>${{ "%.2f"|format(p['precio']) }}</strong>
+                </p>
+
+                <a href="{{ url_for('pedido', producto=p['nombre']) }}" class="btn btn-primary">
+                    Hacer pedido
+                </a>
+
             </div>
-        {% endfor %}
-    {% else %}
-        <p class="text-center">No hay productos disponibles en esta categoría.</p>
-    {% endif %}
+        </div>
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+<p class="text-center">No hay productos disponibles en esta categoría.</p>
+
+{% endif %}
+
 </div>
+
 {% endblock %}
