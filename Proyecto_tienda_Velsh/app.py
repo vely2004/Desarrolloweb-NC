@@ -620,7 +620,6 @@ def ver_usuarios():
     cursor.close()
     conexion.close()
 
-    print("USUARIOS:", usuarios)
     
     return render_template("admin/admin_usuarios.html", usuarios=usuarios)
 
@@ -639,14 +638,14 @@ def registro_usuario():
         nombre = request.form.get("nombre").strip()
         mail = request.form.get("mail").strip().lower()
         password = request.form.get("password").strip()
-        print("PASSWORD LOGIN:", repr(password))  # Esto muestra exactamente qué se está ingresando
+        
         fecha_registro = request.form.get("fecha_registro")
 
-        print("PASSWORD REGISTRO:", repr(password))  # 👈 AQUÍ}
+        
         
         password_hash = generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
 
-        print("HASH GENERADO:", password_hash) 
+        
 
         # Guardar en base de datos MySQL
         conexion = obtener_conexion()
@@ -691,18 +690,12 @@ def login_usuario():
         cursor.close()
         conexion.close()
 
-        print("USUARIO ENCONTRADO:", usuario)
-
         if usuario:
             password_hash_db = usuario["password"].strip()
             print("HASH GUARDADO:", repr(password_hash_db))
 
             resultado_check = check_password_hash(password_hash_db, password)
-            print("RESULTADO CHECK_PASSWORD_HASH:", resultado_check)
-            print("TIPO HASH:", type(password_hash_db), "TIPO PASSWORD:", type(password))
-            print("LONGITUD HASH:", len(password_hash_db), "LONGITUD PASSWORD:", len(password))
-
-
+            
             if resultado_check:
                 user = Usuario(
                     usuario["id_usuario"],
