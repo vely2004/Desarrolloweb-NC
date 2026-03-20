@@ -5,19 +5,18 @@
 <h2>Panel de Administración</h2>
 
 <!-- Menú de subrutas -->
-<ul>
-    <li><a href="{{ url_for('admin_añadir') }}">Añadir producto</a></li>
-    <li><a href="{{ url_for('admin_eliminar') }}">Eliminar producto</a></li>
-    <li><a href="{{ url_for('admin_actualizar') }}">Actualizar producto</a></li>
-    <li><a href="{{ url_for('admin_buscar') }}">Buscar producto</a></li>
-    <li><a href="{{ url_for('admin_mostrar') }}">Mostrar Productos</a></li>
-    <li><a href="{{ url_for('mostrar_datos') }}">Datos de Pedidostxt-csv-json</li>
-    <li><a href="{{ url_for('ver_pedidos') }}">Datos de Pedidos bd</a></li>
-    <li><a href="{{ url_for('ver_productos_bd') }}">Productos bd</a></li>
-    <li><a href="{{ url_for('ver_usuarios') }}">Usuarios registrados</a></li>
-    <li><a href="{{ url_for('logout') }}">Cerrar sesión</a></li>
-    
-</ul>
+    <div class="botones-usuario">
+        <a href="{{ url_for('admin_añadir') }}" class="btn-usuario">Añadir producto</a>
+        <a href="{{ url_for('admin_eliminar') }}" class="btn-usuario">Eliminar producto</a>
+        <a href="{{ url_for('admin_actualizar') }}" class="btn-usuario">Actualizar producto</a>
+        <a href="{{ url_for('admin_buscar') }}" class="btn-usuario">Buscar producto</a>
+        <a href="{{ url_for('admin_productos') }}" class="btn-usuario">Mostrar Productos</a>
+        <a href="{{ url_for('mostrar_datos') }}" class="btn-usuario">Datos Pedidostxt-csv-json</a>
+        <a href="{{ url_for('ver_pedidos') }}" class="btn-usuario">Datos Pedidos bd</a>
+        <a href="{{ url_for('ver_productos_bd') }}" class="btn-usuario">Productos bd</a>
+        <a href="{{ url_for('ver_usuarios') }}" class="btn-usuario">Usuarios registrados</a>
+    </div>
+
 
 <!-- Mostrar mensaje opcional -->
 {% if mostrar_login %}

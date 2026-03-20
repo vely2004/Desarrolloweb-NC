@@ -2,14 +2,30 @@
 
 {% block title %}Usuario{% endblock %}
 
-{%block content %}
+{% block content %}
 
 <h2>Cuenta de Usuario</h2>
 
-<!-- Menú de acción -->
-<ul>
-    <li><a href="{{ url_for('registro_usuario') }}">Registrarse</a></li>
-    <li><a href="{{ url_for('login_usuario') }}">Iniciar Sesión</a></li>
-</ul>
+{% if current_user.is_authenticated %}
+    <h3>Bienvenido, {{ current_user.nombre }}</h3>
+    <p>Has iniciado sesión correctamente.</p>
+
+     <div class="botones-usuario">
+        {% if current_user.rol == "admin" %}
+            <a href="{{ url_for('admin') }}" class="btn-usuario">Panel de administrador</a>
+        {% endif %}
+
+        <a href="{{ url_for('inicio') }}" class="btn-usuario">Ir al inicio</a>
+        <a href="{{ url_for('pedido') }}" class="btn-usuario">Hacer un pedido</a>
+        <a href="{{ url_for('logout_usuario') }}" class="btn-usuario">Cerrar sesión</a>
+    </div>
+{% else %}
+    <p>Desde aquí puedes iniciar sesión o registrarte en el sistema.</p>
+
+    <div class="botones-usuario">
+        <a href="{{ url_for('registro_usuario') }}" class="btn-usuario">Registrarse</a>
+        <a href="{{ url_for('login_usuario') }}" class="btn-usuario">Iniciar sesión</a>
+    </div>
+{% endif %}
 
 {% endblock %}

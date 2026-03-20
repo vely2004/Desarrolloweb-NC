@@ -19,8 +19,13 @@
         <a href="{{ url_for('categoria', tipo='mocasines') }}">Mocasines</a>
         <a href="{{ url_for('pedido') }}">Pedido</a>
         <a href="{{ url_for('contacto') }}">Contacto</a>
-        <a href="{{ url_for('about') }}">Acerca de</a>
         <a href="{{ url_for('usuario') }}">Usuario</a>
+        <a href="{{ url_for('about') }}">Acerca de</a>
+
+        {% if current_user.is_authenticated and current_user.rol == "admin" %}
+           <a href="{{ url_for('admin') }}">Administrador</a>
+        {% endif %}
+
     </nav>
 </header>
 

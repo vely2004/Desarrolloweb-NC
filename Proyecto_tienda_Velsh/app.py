@@ -1,15 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for
 from datetime import timedelta
 from form import PedidoForm
 from inventario.bd import db, Cliente, ProductoDB
 from inventario.inventario import Inventario
 from inventario.productos import Producto
 from Conexion.conexion import obtener_conexion
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 
 import json
 import csv
 import os
+
 
 #--- Inicializar app---
 app = Flask(__name__)
@@ -18,6 +20,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = "super_secret_key"
 app.permanent_session_lifetime = timedelta(minutes=15)
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login_usuario"
+login_manager.login_message = "Debes iniciar sesión para acceder a esta página."
 
 #inicar AQLAlchemy
 db.init_app(app)
@@ -29,8 +35,39 @@ txt_file = "inventario/data/datos.txt"
 json_file = "inventario/data/datos.json"
 csv_file = "inventario/data/datos.csv"
 
+#Complementales de usuario
+#clase usuario
+class Usuario(UserMixin):
+    def __init__(self, id_usuario, nombre, mail, password, rol):
+        self.id_usuario = id_usuario
+        self.nombre = nombre
+        self.mail = mail
+        self.password = password
+        self.rol = rol
 
-#<<<<<<<<<<<<<<<<<<<< Rutas>>>>>>>>>>>>>>>>>>>>>>>
+    def get_id(self):
+        return str(self.id_usuario)
+    #--user loader para Flask-Login--
+@login_manager.user_loader
+def load_user(user_id):
+    conexion = obtener_conexion()
+    cursor = conexion.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM usuarios WHERE id_usuario = %s", (user_id,))
+    usuario = cursor.fetchone()
+    cursor.close()
+    conexion.close()
+
+    if usuario:
+        return Usuario(
+            usuario["id_usuario"],
+            usuario["nombre"],
+            usuario["mail"],
+            usuario["password"],
+            usuario["rol"]
+        )
+    return None
+
+#/////////////////////Rutas>////////////////////////
 
 #>>>>>>>>>>>>>Ruta principal<<<<<<<<<<<<<<<<<<
 @app.route('/')
@@ -82,7 +119,7 @@ def categoria(tipo):
 @app.route('/about')
 def about():
     return render_template("about.html")
-#---Ruta ofertas---
+#>>>>>>>>>>>>>>>>>Ruta ofertas<<<<<<<<<<<<<<<<<
 @app.route('/ofertas')
 def ofertas():
     return render_template("ofertas.html")
@@ -90,15 +127,13 @@ def ofertas():
 #>>>>>>>>>>>>Ruta pedido<<<<<<<<<<<<<
 @app.route('/pedido', methods=['GET', 'POST'])
 def pedido():
-
     form = PedidoForm()  # <-- formulario
     # ---- SESIÓN ACTIVA ----
-    usuario_nombre = session.get("usuario")
     usuario_info = None
-    if usuario_nombre:
+    if current_user.is_authenticated:
         conexion = obtener_conexion()
         cursor = conexion.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM usuarios WHERE nombre=%s", (usuario_nombre,))
+        cursor.execute("SELECT * FROM usuarios WHERE id_usuario = %s", (current_user.id_usuario,))
         usuario_info = cursor.fetchone()
         cursor.close()
         conexion.close()
@@ -156,7 +191,11 @@ def pedido():
 
 #<<<<<<<<<<<<PEDIDOS MYSQL<<<<<<<<<<<<<
 @app.route('/admin/pedidos')
+@login_required
 def ver_pedidos():
+        if current_user.rol != "admin":
+            return redirect(url_for("usuario"))
+
         conexion = obtener_conexion()
         cursor = conexion.cursor()
 
@@ -170,7 +209,11 @@ def ver_pedidos():
 
 #---Modificar pedido---
 @app.route('/admin/pedidos/editar/<int:id_pedido>', methods=['GET', 'POST'])
+@login_required
 def editar_pedido(id_pedido):
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
+    
     conexion = obtener_conexion()
     cursor = conexion.cursor()
     cursor.execute("SELECT * FROM pedidos WHERE id_pedido=%s", (id_pedido,))
@@ -201,7 +244,11 @@ def editar_pedido(id_pedido):
 
 #---Eliminar pedido---
 @app.route('/admin/pedidos/eliminar/<int:id_pedido>')
+@login_required
 def eliminar_pedido(id_pedido):
+
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
 
     conexion = obtener_conexion()
     cursor = conexion.cursor()
@@ -217,61 +264,23 @@ def eliminar_pedido(id_pedido):
 @app.route('/contacto')
 def contacto():
     return render_template("contacto.html")
-
-
-#<<<<<<<<<<<Seguridad>>>>>>>>>>>>>>
-class Seguridad:
-    def __init__(self, usuario_correcto, clave_correcta):
-        self.usuario_correcto = usuario_correcto
-        self.clave_correcta = clave_correcta
-
-    def verificar(self, usuario_ingresado, clave_ingresada):
-        return (
-            usuario_ingresado == self.usuario_correcto and
-            clave_ingresada == self.clave_correcta
-        )
-
-seguridad = Seguridad("Velsh", "0706194511")
-
-#<<<<<<<<<<<<<<<Ruta sesion de administrador>>>>>>>>>>>>>>>
-#---Ruta de login---
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        usuario = request.form.get("usuario")
-        contraseña = request.form.get("contraseña")
-
-        if seguridad.verificar(usuario, contraseña):
-            session["admin"] = True   # 🔐 
-            session.permanent = False  
-            return redirect(url_for("admin"))
-        else:
-            return "Usuario o clave incorrectos"
-
-    return render_template("login.html")
-#<<<<<<<<<<<<<<<Ruta de logout<<<<<<<<<<<<<<<<<<
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("login"))
-#_________Ruta administrador_________
-@app.route("/admin", methods=["GET", "POST"])
+#<<<<<<<<<<<<<<Ruta administrador>>>>>>>>>>>
+@app.route("/admin")
+@login_required
 def admin():
-    # Si no hay sesión activa, redirige al login
-    if not session.get("admin"):
-        return redirect(url_for("login"))
-    #Si ya está logueado, muestra el panel
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
+
     productos = inventario.mostrar_productos()
-    return render_template("admin.html", mostrar_login=False, productos=productos)
-# Mostrar todos los productos
-@app.route("/admin/mostrar")
-def admin_mostrar():
-    productos = inventario.mostrar_productos()
-    return render_template("admin_productos.html", productos=productos)
+    return render_template("admin.html", productos=productos)
 
 # ---Ruta de admin para añadir productos---
 @app.route("/admin/añadir", methods=["GET", "POST"])
+@login_required
 def admin_añadir():
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
+
     mensaje = ""
     if request.method == "POST":
         # Extraer datos del formulario
@@ -316,7 +325,11 @@ def admin_añadir():
 
 # ---Ruta de admin para eliminar productos---
 @app.route("/admin/eliminar", methods=["GET", "POST"])
+@login_required
 def admin_eliminar():
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
+
     mensaje = ""
     if request.method == "POST":
         id_str = request.form.get("id_producto")
@@ -340,7 +353,11 @@ def admin_eliminar():
     )
 # ---Ruta de admin para actualizar productos---
 @app.route("/admin/actualizar", methods=["GET", "POST"])
+@login_required
 def admin_actualizar():
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
+
     mensaje = ""
 
     if request.method == "POST":
@@ -372,7 +389,11 @@ def admin_actualizar():
 
 # ---Ruta de admin buscar productos---
 @app.route("/admin/buscar", methods=["GET", "POST"])
+@login_required
 def admin_buscar():
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
+
     productos = []
     mensaje = ""
 
@@ -394,7 +415,11 @@ def admin_buscar():
     )
 # ---Ruta de admin para mostrar productos---
 @app.route("/admin/productos")
+@login_required
 def admin_productos():
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
+
     productos = inventario.mostrar_productos()
     return render_template(
         "admin_productos.html",
@@ -403,7 +428,11 @@ def admin_productos():
 
 #---Ruta de admin para mostrar datos de pedidos---
 @app.route('/admin/datos')
+@login_required
 def mostrar_datos():
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
+
      # --- Pedidos desde SQLite ---
     pedidos_db = Cliente.query.all()  # Trae todos los pedidos de la base de datos
     # Leer TXT
@@ -448,7 +477,10 @@ def mostrar_datos():
 #>>>>>>>>>>>Ruta de admin para bd productos mysQl<<<<<<<<<<<<
 #---Ruta de admin para consultar productos desde bd mysql---
 @app.route("/admin/productos_bd")
+@login_required
 def ver_productos_bd():
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
 
     conexion = obtener_conexion()
     cursor = conexion.cursor()
@@ -462,7 +494,11 @@ def ver_productos_bd():
     return render_template("admin/productos_bd.html", productos=productos)
 #---Ruta para insertar registros de productos desde bd mysql---
 @app.route("/admin/productos_bd/agregar", methods=["GET","POST"])
+@login_required
 def agregar_producto_bd():
+
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
 
     if request.method == "POST":
 
@@ -502,7 +538,10 @@ def agregar_producto_bd():
 
 #---Ruta para eliminar registros de productos desde bd mysql---
 @app.route("/admin/productos_bd/eliminar/<int:id_producto>")
+@login_required
 def eliminar_producto_bd(id_producto):
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
 
     conexion = obtener_conexion()
     cursor = conexion.cursor()
@@ -520,7 +559,11 @@ def eliminar_producto_bd(id_producto):
     return redirect(url_for("ver_productos_bd"))
 #---Ruta para modificar registros de productos desde bd mysql---
 @app.route("/admin/productos_bd/editar/<int:id_producto>", methods=["GET","POST"])
+@login_required
 def editar_producto_bd(id_producto):
+
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
 
     conexion = obtener_conexion()
     cursor = conexion.cursor()
@@ -561,23 +604,31 @@ def editar_producto_bd(id_producto):
         "admin/editar_producto_bd.html",
         producto=producto
     )
-#----Ruta para mostrar usuarios en admi---
+#----Ruta para mostrar usuarios en admin---
 @app.route("/admin/usuarios")
+@login_required
 def ver_usuarios():
+    if current_user.rol != "admin":
+        return redirect(url_for("usuario"))
+
     conexion = obtener_conexion()
-    cursor = conexion.cursor()
+    cursor = conexion.cursor(dictionary=True)
     
-    cursor.execute("SELECT * FROM usuarios")  # Trae todos los usuarios
+    cursor.execute("SELECT * FROM usuarios") 
     usuarios = cursor.fetchall()
     
     cursor.close()
     conexion.close()
+
+    print("USUARIOS:", usuarios)
     
     return render_template("admin/admin_usuarios.html", usuarios=usuarios)
 
 
-# --- Página índice de usuario  ---
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>  Página índice de usuario  <<<<<<<<<<<<<<<<<<<<<<<<<<<
+#---Ruta para usuario---
 @app.route("/usuario")
+@login_required
 def usuario():
     return render_template("usuario.html")
 # --- Registro de usuarios ---
@@ -585,17 +636,32 @@ def usuario():
 def registro_usuario():
     mensaje = ""
     if request.method == "POST":
-        nombre = request.form.get("nombre")
-        mail = request.form.get("mail")
-        password = request.form.get("password")
+        nombre = request.form.get("nombre").strip()
+        mail = request.form.get("mail").strip().lower()
+        password = request.form.get("password").strip()
+        print("PASSWORD LOGIN:", repr(password))  # Esto muestra exactamente qué se está ingresando
         fecha_registro = request.form.get("fecha_registro")
+
+        print("PASSWORD REGISTRO:", repr(password))  # 👈 AQUÍ}
+        
+        password_hash = generate_password_hash(password, method='pbkdf2:sha256', salt_length=16)
+
+        print("HASH GENERADO:", password_hash) 
 
         # Guardar en base de datos MySQL
         conexion = obtener_conexion()
         cursor = conexion.cursor()
+        cursor.execute("SELECT * FROM usuarios WHERE mail = %s", (mail,))
+        usuario_existente = cursor.fetchone()
+        if usuario_existente:
+            cursor.close()
+            conexion.close()
+            mensaje = "El correo electrónico ya está registrado"
+            return render_template("registro_usuario.html", mensaje=mensaje)
+        
         cursor.execute(
-            "INSERT INTO usuarios (nombre, mail, password, fecha_registro) VALUES (%s,%s,%s,%s)",
-            (nombre, mail, password, fecha_registro)
+            "INSERT INTO usuarios (nombre, mail, password, fecha_registro, rol) VALUES (%s,%s,%s,%s,%s)",
+              (nombre, mail, password_hash, fecha_registro, "usuario")
         )
         conexion.commit()
         cursor.close()
@@ -612,30 +678,59 @@ def registro_usuario():
 def login_usuario():
     mensaje = ""
     if request.method == "POST":
-        mail = request.form.get("mail")
-        password = request.form.get("password")
+        mail = request.form.get("mail").strip().lower()
+        password = request.form.get("password").strip()
+    
+        print("PASSWORD LOGIN:", repr(password))
+        print("MAIL INGRESADO:", repr(mail))
 
         conexion = obtener_conexion()
         cursor = conexion.cursor(dictionary=True)
-        cursor.execute(
-            "SELECT * FROM usuarios WHERE mail=%s AND password=%s",
-            (mail, password)
-        )
+        cursor.execute("SELECT * FROM usuarios WHERE mail = %s", (mail,))
         usuario = cursor.fetchone()
         cursor.close()
         conexion.close()
 
+        print("USUARIO ENCONTRADO:", usuario)
+
         if usuario:
-            # Guardar usuario en session
-            session["usuario"] = usuario["nombre"]
-            return redirect(url_for("inicio"))  # o página de usuario
+            password_hash_db = usuario["password"].strip()
+            print("HASH GUARDADO:", repr(password_hash_db))
+
+            resultado_check = check_password_hash(password_hash_db, password)
+            print("RESULTADO CHECK_PASSWORD_HASH:", resultado_check)
+            print("TIPO HASH:", type(password_hash_db), "TIPO PASSWORD:", type(password))
+            print("LONGITUD HASH:", len(password_hash_db), "LONGITUD PASSWORD:", len(password))
+
+
+            if resultado_check:
+                user = Usuario(
+                    usuario["id_usuario"],
+                    usuario["nombre"],
+                    usuario["mail"],
+                    usuario["password"],
+                    usuario["rol"]
+                )
+
+                login_user(user)
+
+                if user.rol == "admin":
+                    return redirect(url_for("admin"))
+
+                return redirect(url_for("usuario"))
+            else:
+                mensaje = "Mail o contraseña incorrectos"
         else:
             mensaje = "Mail o contraseña incorrectos"
 
     return render_template("login_usuario.html", mensaje=mensaje)
 
-
-
+#---Logout de usuario---
+@app.route("/usuario/logout")
+@login_required
+def logout_usuario():
+    logout_user()
+    return redirect(url_for("login_usuario"))
 
 if __name__ == "__main__":
     inventario = Inventario()

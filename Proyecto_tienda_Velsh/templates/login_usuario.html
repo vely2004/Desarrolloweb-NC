@@ -11,14 +11,34 @@
         <label for="mail">Email:</label>
         <input type="email" name="mail" id="mail" class="form-control" required>
     </div>
-    <div class="mb-3">
-        <label for="password">Contraseña:</label>
-        <input type="password" name="password" id="password" class="form-control" required>
-    </div>
+    <div class="mb-3 position-relative">
+    <label for="password">Contraseña:</label>
+    
+    <input type="password" name="password" id="password" class="form-control pe-5" required>
+
+    <span onclick="togglePassword()" id="icono"
+          style="position:absolute; right:10px; top:38px; cursor:pointer;">
+    </span>
+</div>
     <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
 </form>
 
 <p class="text-center mt-3">
     ¿No tienes cuenta? <a href="{{ url_for('registro_usuario') }}">Regístrate aquí</a>
 </p>
+
+<script>
+function togglePassword() {
+    const input = document.getElementById("password");
+    const icono = document.getElementById("icono");
+
+    if (input.type === "password") {
+        input.type = "text";
+        icono.textContent = "🙈";
+    } else {
+        input.type = "password";
+        icono.textContent = "👁️";
+    }
+}
+</script>
 {% endblock %}

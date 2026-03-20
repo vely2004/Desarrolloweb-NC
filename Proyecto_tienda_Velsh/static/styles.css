@@ -134,7 +134,7 @@ p {
 
 /*links*/
 a {
-    color: #a663bb;   /* rosado moderno */
+    color: hsl(286, 39%, 56%);   /* rosado moderno */
     text-decoration: none;
 }
 
@@ -155,4 +155,31 @@ footer p {
 footer strong {
     color: #111111;
     font-size: 18px;
+}
+
+/* Botones de inicio de sesión y registro */
+.botones-usuario {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+    max-width: 250px;
+}
+
+.btn-usuario {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #a356b6;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-usuario:hover {
+    background-color: #5b2b5f;
+    color: white;
+    text-decoration: none;
 }
