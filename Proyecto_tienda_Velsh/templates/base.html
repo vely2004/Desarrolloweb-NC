@@ -12,23 +12,43 @@
 <header>
     <h1>Tienda Online Velsh</h1>
     <nav>
-        <a href="{{ url_for('inicio') }}">Inicio</a>
-        <a href="{{ url_for('categoria', tipo='deportivos') }}">Deportivos</a>
-        <a href="{{ url_for('categoria', tipo='elegantes') }}">Elegantes</a>
-        <a href="{{ url_for('categoria', tipo='botas') }}">Botas</a>
-        <a href="{{ url_for('categoria', tipo='mocasines') }}">Mocasines</a>
-        <a href="{{ url_for('pedido') }}">Pedido</a>
-        <a href="{{ url_for('contacto') }}">Contacto</a>
-        <a href="{{ url_for('usuario') }}">Usuario</a>
-        <a href="{{ url_for('about') }}">Acerca de</a>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">  
+                <a class="nav-link" href="{{ url_for('inicio') }}">Inicio</a>
+            </li>  
+            <li class="nav-item"> 
+                <a class="nav-link" href="{{ url_for('categoria', tipo='deportivos') }}">Deportivos</a>
+            </li>
+            <li class="nav-item"> 
+                <a class="nav-link" href="{{ url_for('categoria', tipo='elegantes') }}">Elegantes</a>
+            </li>
+            <li class="nav-item"> 
+                <a class="nav-link" href="{{ url_for('categoria', tipo='botas') }}">Botas</a>
+            </li>
+            <li class="nav-item"> 
+                <a class="nav-link" href="{{ url_for('categoria', tipo='mocasines') }}">Mocasines</a>
+            </li>
+            <li class="nav-item"> 
+                <a class="nav-link" href="{{ url_for('pedido') }}">Pedido</a>
+            </li>
+            <li class="nav-item"> 
+                <a class="nav-link" href="{{ url_for('contacto') }}">Contacto</a>
+            </li>
+            <li class="nav-item"> 
+                <a class="nav-link" href="{{ url_for('usuario') }}">Usuario</a>
+            </li>
+            <li class="nav-item"> 
+                <a class="nav-link" href="{{ url_for('about') }}">Acerca de</a>
+            </li>
 
-        {% if current_user.is_authenticated and current_user.rol == "admin" %}
-           <a href="{{ url_for('admin') }}">Administrador</a>
-        {% endif %}
-
+            {% if current_user.is_authenticated and current_user.rol == "admin" %}
+            <li class="nav-item"> 
+                <a class="nav-link" href="{{ url_for('admin') }}">Administrador</a>
+            </li>
+            {% endif %}
+       </ul>
     </nav>
 </header>
-
 <main>
     {% block content %}
     {% endblock %}

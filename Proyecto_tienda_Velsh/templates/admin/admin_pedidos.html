@@ -3,9 +3,11 @@
 {% block title %}Datos de Pedidos{% endblock %}
 
 {% block content %}
+<!-- Botón de volver al panel principal -->
+    <a href="{{ url_for('admin') }}" class="btn btn-primary">Volver al panel</a>
 <h2>Datos de Pedidos</h2>
 
-<table border="1">
+<table class="table table-bordered">
 
 <tr>
 <th>ID</th>
@@ -14,7 +16,7 @@
 <th>Celular</th>
 <th>Dirección</th>
 <th>Producto</th>
-<th>Acciones</th>
+<th>Opciones</th>
 </tr>
 
 {% for p in pedidos %}
@@ -27,12 +29,11 @@
 <td>{{ p[4] }}</td>
 <td>{{ p[5] }}</td>
 
-<td>
-<a href="{{ url_for('editar_pedido', id_pedido=p[0]) }}">Editar</a> |
-<a href="{{ url_for('eliminar_pedido', id_pedido=p[0]) }}"
-onclick="return confirm('¿Estás seguro de eliminar este pedido?')">
-Eliminar
-</a>
+<td colspan="2">
+    <a href="{{ url_for('editar_pedido', id_pedido=p[0]) }}" class="btn btn-sm btn-primary">Editar</a>
+    <a href="{{ url_for('eliminar_pedido', id_pedido=p[0]) }}" 
+       class="btn btn-sm btn-danger"
+       onclick="return confirm('¿Estás seguro de eliminar este pedido?')">Eliminar</a>
 </td>
 
 </tr>

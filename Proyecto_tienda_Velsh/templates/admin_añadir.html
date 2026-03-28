@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Añadir Producto{% endblock %}
 {% block content %}
+<form action="{{ url_for('admin') }}" method="get" style="display:inline;">
+
+    <button class="btn btn-primary">Volver al panel principal</button>
+    
+</form>
+
 <h2>Añadir Nuevo Producto</h2>
 <!-- Mensaje de éxito o error -->
 {% if mensaje %}
@@ -17,13 +23,10 @@
     Color: <input type="text" name="color"><br><br>
     Imagen de referencia: <input type="file" name="imagen"><br><br>
 
-    <button type="submit">Agregar Producto</button>
+    <button class="btn btn-primary" type="submit">Agregar Producto</button>
 
 </form>
 
-<form action="{{ url_for('admin') }}" method="get" style="display:inline;">
-    <button type="submit">Volver al panel principal</button>
-</form>
 <h3>Productos agregados</h3>
 <table border="1">
 <tr>

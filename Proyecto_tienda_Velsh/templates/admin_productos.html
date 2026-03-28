@@ -3,14 +3,13 @@
 {% block title %}Todos los Productos{% endblock %}
 
 {% block content %}
+<form action="{{ url_for('admin') }}" method="get" style="display:inline;">
+
+    <button class="btn btn-primary">Volver al panel principal</button>
+    
+</form>
 
 <h2>Inventario Completo</h2>
-
-<p>
-    <a href="{{ url_for('admin') }}">
-        <button type="button">Volver al panel principal</button>
-    </a>
-</p>
 
 {% if productos %}
 <table border="1">

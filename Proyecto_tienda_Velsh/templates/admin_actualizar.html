@@ -3,14 +3,14 @@
 {% block title %}Actualizar Producto{% endblock %}
 
 {% block content %}
+<form action="{{ url_for('admin') }}" method="get" style="display:inline;">
+
+    <button class="btn btn-primary" >Volver al panel principal</button>
+    
+</form>
 
 <h2>Actualizar Producto</h2>
 
-<p>
-    <a href="{{ url_for('admin') }}">
-        <button type="button">Volver al panel principal</button>
-    </a>
-</p>
 
 {% if mensaje %}
     <p style="color: green;">{{ mensaje }}</p>
@@ -38,7 +38,7 @@
     <label>Nuevo color:</label>
     <input type="text" name="color"><br><br>
 
-    <button type="submit">Actualizar Producto</button>
+    <button class="btn btn-primary" type="submit">Actualizar Producto</button>
 </form>
 
 <hr>

@@ -134,12 +134,32 @@ p {
 
 /*links*/
 a {
-    color: hsl(286, 39%, 56%);   /* rosado moderno */
+    color: hsl(286, 39%, 56%);  
     text-decoration: none;
 }
 
 a:hover {
-    color: #5b2b5f;   /* más oscuro al pasar el mouse */
+    color: #5b2b5f;   
+}
+/* NAV TABS - menú superior */
+.nav-tabs .nav-link {
+    color: #030303; 
+    background-color:#a356b6; 
+    border: 1px solid #dee2e6; 
+    margin-right: 5px; 
+    border-radius: 8px 8px 0 0; 
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-tabs .nav-link:hover {
+    background-color: #5b2b5f; 
+    color: white;
+}
+
+.nav-tabs .nav-link.active {
+    color: white;
+    background-color: #661c75; 
+    border-color: #661c75 #661c75 #f8f9fa; 
 }
 /* FOOTER */
 footer {
