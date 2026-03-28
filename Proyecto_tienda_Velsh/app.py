@@ -1,16 +1,27 @@
-from flask import Flask, render_template, request, redirect, url_for
+import json
+import csv
+import os
+import io
+
+from flask import Flask, render_template, request, redirect, url_for, send_file
 from datetime import timedelta
 from form import PedidoForm
-from inventario.bd import db, Cliente, ProductoDB
+from inventario.bd import db, Cliente
 from inventario.inventario import Inventario
 from inventario.productos import Producto
 from Conexion.conexion import obtener_conexion
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from models import Usuario, Producto
+from services.producto_service import (
+    obtener_productos,
+    insertar_producto,
+    obtener_producto_por_id,
+    actualizar_producto,
+    eliminar_producto
+)
+from fpdf import FPDF
 
-import json
-import csv
-import os
 
 
 #--- Inicializar app---
@@ -35,18 +46,7 @@ txt_file = "inventario/data/datos.txt"
 json_file = "inventario/data/datos.json"
 csv_file = "inventario/data/datos.csv"
 
-#Complementales de usuario
-#clase usuario
-class Usuario(UserMixin):
-    def __init__(self, id_usuario, nombre, mail, password, rol):
-        self.id_usuario = id_usuario
-        self.nombre = nombre
-        self.mail = mail
-        self.password = password
-        self.rol = rol
 
-    def get_id(self):
-        return str(self.id_usuario)
     #--user loader para Flask-Login--
 @login_manager.user_loader
 def load_user(user_id):
@@ -260,6 +260,7 @@ def eliminar_pedido(id_pedido):
     conexion.close()
 
     return redirect(url_for('ver_pedidos'))
+
 #<<<<<<<<<<Ruta contacto>>>>>>>>>>>
 @app.route('/contacto')
 def contacto():
@@ -473,23 +474,96 @@ def mostrar_datos():
         pedidos_json=pedidos_json,
         pedidos_csv=pedidos_csv
     )
+#<<<<<<<<<<<Ruta de reporte pdf>>>>>>>>>>
+@app.route("/reporte_pdf")
+@login_required
+def reporte_pdf():
+    productos = obtener_productos()  # Lista de tuplas o listas
 
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 14)
+    pdf.cell(0, 10, "Reporte de Productos", 0, 1, "C")
+
+    # Encabezado de la tabla
+    pdf.set_font("Arial", "B", 12)
+    col_widths = [20, 40, 30, 30, 30, 25, 25]  # anchos de columnas
+    headers = ["ID", "Nombre", "Stock", "Precio", "Categoria", "Talla", "Color"]
+    for i, header in enumerate(headers):
+        pdf.cell(col_widths[i], 10, header, 1, 0, 'C')
+    pdf.ln()
+
+    pdf.set_font("Arial", "", 12)
+    row_height = 6
+
+    for fila in productos:
+        id_producto = str(fila[0])
+        nombre = str(fila[1])
+        categoria = str(fila[2])
+        talla = str(fila[3])
+        color = str(fila[4] or '')
+        precio = fila[5] or 0.0
+        stock = fila[6] or 0
+
+        try:
+            precio_float = float(str(precio).replace(',', '.'))
+        except ValueError:
+            precio_float = 0.0
+
+        # Calcular la altura máxima de la fila
+        talla_lines = pdf.multi_cell(col_widths[5], row_height, talla, split_only=True)
+        color_lines = pdf.multi_cell(col_widths[6], row_height, color, split_only=True)
+        max_lines = max(len(talla_lines), len(color_lines))
+        max_height = max_lines * row_height
+
+        x = pdf.get_x()
+        y = pdf.get_y()
+
+        # Columnas normales
+        pdf.cell(col_widths[0], max_height, id_producto, 1, 0, 'C')
+        pdf.cell(col_widths[1], max_height, nombre, 1, 0, 'L')
+        pdf.cell(col_widths[2], max_height, str(stock), 1, 0, 'C')
+        pdf.cell(col_widths[3], max_height, f"${precio_float:.2f}", 1, 0, 'R')
+        pdf.cell(col_widths[4], max_height, categoria, 1, 0, 'L')
+
+        # Columna Talla
+        pdf.set_xy(x + sum(col_widths[:5]), y)
+        pdf.multi_cell(col_widths[5], row_height, talla, border=1, align='C')
+
+        # Columna Color
+        pdf.set_xy(x + sum(col_widths[:6]), y)
+        pdf.multi_cell(col_widths[6], row_height, color, border=1, align='C')
+
+        # Mover cursor a la siguiente fila
+        pdf.set_xy(x, y + max_height)
+
+    # Generar PDF en memoria
+    pdf_output = pdf.output(dest='S').encode('latin1')
+    pdf_buffer = io.BytesIO(pdf_output)
+
+    return send_file(
+        pdf_buffer,
+        as_attachment=True,
+        download_name="reporte_productos.pdf",
+        mimetype="application/pdf"
+    )
 #>>>>>>>>>>>Ruta de admin para bd productos mysQl<<<<<<<<<<<<
 #---Ruta de admin para consultar productos desde bd mysql---
+#--Implementación del CRUD--
 @app.route("/admin/productos_bd")
 @login_required
 def ver_productos_bd():
     if current_user.rol != "admin":
         return redirect(url_for("usuario"))
 
-    conexion = obtener_conexion()
-    cursor = conexion.cursor()
+    productos_bd = obtener_productos()
 
-    cursor.execute("SELECT * FROM productos")
-    productos = cursor.fetchall()
-
-    cursor.close()
-    conexion.close()
+    productos = []
+    for p in productos_bd:
+        producto = Producto(
+            p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7]
+        )
+        productos.append(producto)
 
     return render_template("admin/productos_bd.html", productos=productos)
 #---Ruta para insertar registros de productos desde bd mysql---
@@ -521,16 +595,7 @@ def agregar_producto_bd():
 
            imagen = "img/" + nombre_imagen
 
-        conexion = obtener_conexion()
-        cursor = conexion.cursor()
-
-        cursor.execute("""
-        INSERT INTO productos(nombre,categoria,talla,color,precio,stock,imagen)
-        VALUES (%s,%s,%s,%s,%s,%s,%s)
-        """,(nombre,categoria,talla,color,precio,stock,imagen))
-
-        conexion.commit()
-        conexion.close()
+        insertar_producto(nombre,categoria,talla,color,precio,stock,imagen)
 
         return redirect(url_for("ver_productos_bd"))
 
@@ -543,20 +608,9 @@ def eliminar_producto_bd(id_producto):
     if current_user.rol != "admin":
         return redirect(url_for("usuario"))
 
-    conexion = obtener_conexion()
-    cursor = conexion.cursor()
+    eliminar_producto(id_producto)
 
-    cursor.execute(
-        "DELETE FROM productos WHERE id_producto=%s",
-        (id_producto,)
-    )
-
-    conexion.commit()
-
-    cursor.close()
-    conexion.close()
-
-    return redirect(url_for("ver_productos_bd"))
+    return render_template("admin/eliminar_bd.html", id_producto=id_producto)
 #---Ruta para modificar registros de productos desde bd mysql---
 @app.route("/admin/productos_bd/editar/<int:id_producto>", methods=["GET","POST"])
 @login_required
@@ -565,8 +619,6 @@ def editar_producto_bd(id_producto):
     if current_user.rol != "admin":
         return redirect(url_for("usuario"))
 
-    conexion = obtener_conexion()
-    cursor = conexion.cursor()
 
     if request.method == "POST":
 
@@ -577,28 +629,11 @@ def editar_producto_bd(id_producto):
         precio = request.form["precio"]
         stock = request.form["stock"]
 
-        cursor.execute("""
-        UPDATE productos
-        SET nombre=%s,categoria=%s,talla=%s,color=%s,precio=%s,stock=%s
-        WHERE id_producto=%s
-        """,(nombre,categoria,talla,color,precio,stock,id_producto))
-
-        conexion.commit()
-
-        cursor.close()
-        conexion.close()
+        actualizar_producto(id_producto,nombre,categoria,talla,color,precio,stock)
 
         return redirect(url_for("ver_productos_bd"))
 
-    cursor.execute(
-        "SELECT * FROM productos WHERE id_producto=%s",
-        (id_producto,)
-    )
-
-    producto = cursor.fetchone()
-
-    cursor.close()
-    conexion.close()
+    producto = obtener_producto_por_id(id_producto)
 
     return render_template(
         "admin/editar_producto_bd.html",

@@ -1,31 +1,56 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% block title %}Editar Producto{% endblock %}
 
 {% block content %}
 
-<h2>Editar Producto</h2>
+<div class="form-section mx-auto" style="max-width:600px;">
+    <h2 class="text-center mb-4">Editar Producto</h2>
 
-<form method="POST">
+    <form method="POST">
 
-Nombre
-<input type="text" name="nombre" value="{{ producto[1] }}">
+        <!-- Nombre -->
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" name="nombre" value="{{ producto[1] }}">
+        </div>
 
-Categoría
-<input type="text" name="categoria" value="{{ producto[2] }}">
+        <!-- Categoría -->
+        <div class="mb-3">
+            <label for="categoria" class="form-label">Categoría</label>
+            <input type="text" class="form-control" id="categoria" name="categoria" value="{{ producto[2] }}">
+        </div>
 
-Talla
-<input type="text" name="talla" value="{{ producto[3] }}">
+        <!-- Talla -->
+        <div class="mb-3">
+            <label for="talla" class="form-label">Talla</label>
+            <input type="text" class="form-control" id="talla" name="talla" value="{{ producto[3] }}">
+        </div>
 
-Color
-<input type="text" name="color" value="{{ producto[4] }}">
+        <!-- Color -->
+        <div class="mb-3">
+            <label for="color" class="form-label">Color</label>
+            <input type="text" class="form-control" id="color" name="color" value="{{ producto[4] }}">
+        </div>
 
-Precio
-<input type="number" step="0.01" name="precio" value="{{ producto[5] }}">
+        <!-- Precio -->
+        <div class="mb-3">
+            <label for="precio" class="form-label">Precio</label>
+            <input type="number" step="0.01" class="form-control" id="precio" name="precio" value="{{ producto[5] }}">
+        </div>
 
-Stock
-<input type="number" name="stock" value="{{ producto[6] }}">
+        <!-- Stock -->
+        <div class="mb-3">
+            <label for="stock" class="form-label">Stock</label>
+            <input type="number" class="form-control" id="stock" name="stock" value="{{ producto[6] }}">
+        </div>
 
-<button type="submit">Actualizar</button>
+        <!-- Botón Actualizar -->
+        <div class="text-center">
+            <button type="button" class="btn btn-primary">Actualizar</button>
+        </div>
 
-</form>
+    </form>
+</div>
 
 {% endblock %}

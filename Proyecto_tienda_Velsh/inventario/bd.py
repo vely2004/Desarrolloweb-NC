@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 
 # Inicializar SQLAlchemy
-db = SQLAlchemy()  # <-- IMPORTANTE: primero
+db = SQLAlchemy()  
 
 # Definir modelos
 class Cliente(db.Model):
