@@ -7,3 +7,6 @@ Navely ceminario,nn.ceminarioa@uea.edu.ec,0995303425,16 de Julio martha bucaram 
 Categoría: Deportivos
 Talla: 37
 Color: Rojo,
+Velmi,nn.ceminarioa@uea.edu.ec,0995303425,16 de Julio martha bucaram y cañari,Zapatos Jordan
+Tallas: 38
+Color:  Rojo
