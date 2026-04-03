@@ -629,9 +629,12 @@ def editar_producto_bd(id_producto):
         precio = request.form["precio"]
         stock = request.form["stock"]
 
-        actualizar_producto(id_producto,nombre,categoria,talla,color,precio,stock)
-
-        return redirect(url_for("ver_productos_bd"))
+        try:
+            actualizar_producto(id_producto,nombre,categoria,talla,color,precio,stock)
+            print("Producto actualizado correctamente")
+            return redirect(url_for("ver_productos_bd"))
+        except Exception as e:
+            print("Error:", e)
 
     producto = obtener_producto_por_id(id_producto)
 
