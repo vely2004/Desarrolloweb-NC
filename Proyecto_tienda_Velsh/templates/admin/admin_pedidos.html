@@ -22,18 +22,19 @@
 {% for p in pedidos %}
 
 <tr>
-<td>{{ p[0] }}</td>
-<td>{{ p[1] }}</td>
-<td>{{ p[2] }}</td>
-<td>{{ p[3] }}</td>
-<td>{{ p[4] }}</td>
-<td>{{ p[5] }}</td>
+<td>{{ p.id_pedido }}</td>
+<td>{{ p.nombre }}</td>
+<td>{{ p.email }}</td>
+<td>{{ p.celular }}</td>
+<td>{{ p.direccion }}</td>
+<td>{{ p.producto }}</td>
 
 <td colspan="2">
-    <a href="{{ url_for('editar_pedido', id_pedido=p[0]) }}" class="btn btn-sm btn-primary">Editar</a>
-    <a href="{{ url_for('eliminar_pedido', id_pedido=p[0]) }}" 
+    <a href="{{ url_for('eliminar_pedido', id_pedido=p.id_pedido) }}" 
        class="btn btn-sm btn-danger"
-       onclick="return confirm('¿Estás seguro de eliminar este pedido?')">Eliminar</a>
+       onclick="return confirm('¿Estás seguro de eliminar este pedido?')">
+       Eliminar
+    </a>
 </td>
 
 </tr>

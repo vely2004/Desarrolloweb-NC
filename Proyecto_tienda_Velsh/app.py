@@ -3,7 +3,7 @@ import csv
 import os
 import io
 
-from flask import Flask, render_template, request, redirect, url_for, send_file
+from flask import Flask, render_template, request, redirect, url_for, send_file, flash
 from datetime import timedelta
 from form import PedidoForm
 from inventario.bd import db, Cliente
@@ -20,6 +20,7 @@ from services.producto_service import (
     actualizar_producto,
     eliminar_producto
 )
+#PDF
 from fpdf import FPDF
 
 
@@ -126,14 +127,16 @@ def ofertas():
 
 #>>>>>>>>>>>>Ruta pedido<<<<<<<<<<<<<
 @app.route('/pedido', methods=['GET', 'POST'])
+@login_required
 def pedido():
-    form = PedidoForm()  # <-- formulario
-    # ---- SESIÓN ACTIVA ----
-    usuario_info = None
+    form = PedidoForm()
     if current_user.is_authenticated:
         conexion = obtener_conexion()
         cursor = conexion.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM usuarios WHERE id_usuario = %s", (current_user.id_usuario,))
+        cursor.execute(
+            "SELECT nombre, mail FROM usuarios WHERE id_usuario = %s",
+            (current_user.id_usuario,)
+        )
         usuario_info = cursor.fetchone()
         cursor.close()
         conexion.close()
@@ -141,26 +144,46 @@ def pedido():
         if usuario_info:
             form.nombre.data = usuario_info["nombre"]
             form.email.data = usuario_info["mail"]
-    # ---- FIN SESIÓN ----
-    if form.validate_on_submit():  # <-- Validación del formulario
-        # datos del formulario
+
+    # ---- Procesar formulario ----
+    if form.validate_on_submit():
+        # Datos del formulario
         nombre = form.nombre.data
         email = form.email.data
         celular = form.celular.data
         direccion = form.direccion.data
         producto = form.producto.data
 
+        # ---- Guardar en MySQL ----
+        try:
+            conexion = obtener_conexion()
+            cursor = conexion.cursor()
+            sql = "INSERT INTO pedidos (nombre, email, celular, direccion, producto) VALUES (%s, %s, %s, %s, %s)"
+            valores = (nombre, email, celular, direccion, producto)
+            cursor.execute(sql, valores)
+            conexion.commit()
+            print("Pedido guardado en MySQL correctamente")
+        except Exception as e:
+            print("Error al guardar pedido en MySQL:", e)
+            flash("Error al registrar pedido en la base de datos")
+            return redirect(url_for('pedido'))
+        finally:
+            cursor.close()
+            conexion.close()
+
         # -- SQLITE  con SQLalchemy--
         nuevo_cliente = Cliente(
-        nombre=nombre,
-        email=email,
-        celular=celular,
-        direccion=direccion,
-        producto=producto
+            nombre=nombre,
+            email=email,
+            celular=celular,
+            direccion=direccion,
+            producto=producto
         )
-        db.session.add(nuevo_cliente)
-        db.session.commit()
-
+        try:
+            db.session.add(nuevo_cliente)
+            db.session.commit()
+        except Exception as e:
+            print("Error al guardar en SQLite:", e)
         # -- TXT --
         with open("inventario/data/datos.txt", "a", encoding="utf-8") as f:
             f.write(f"{nombre},{email},{celular},{direccion},{producto}\n")
@@ -197,67 +220,42 @@ def ver_pedidos():
             return redirect(url_for("usuario"))
 
         conexion = obtener_conexion()
-        cursor = conexion.cursor()
+        cursor = conexion.cursor(dictionary=True)  # <--- importante
 
         cursor.execute("SELECT * FROM pedidos")
-        pedidos = cursor.fetchall()
+        pedidos = cursor.fetchall()  # ahora cada pedido es un dict
 
         cursor.close()
         conexion.close()
 
         return render_template("admin/admin_pedidos.html", pedidos=pedidos)
 
-#---Modificar pedido---
-@app.route('/admin/pedidos/editar/<int:id_pedido>', methods=['GET', 'POST'])
-@login_required
-def editar_pedido(id_pedido):
-    if current_user.rol != "admin":
-        return redirect(url_for("usuario"))
-    
-    conexion = obtener_conexion()
-    cursor = conexion.cursor()
-    cursor.execute("SELECT * FROM pedidos WHERE id_pedido=%s", (id_pedido,))
-    pedido = cursor.fetchone()
-    cursor.close()
-
-    if request.method == 'POST':
-        nombre = request.form['nombre']
-        email = request.form['email']
-        celular = request.form['celular']
-        direccion = request.form['direccion']
-        producto = request.form['producto']
-
-        conexion = obtener_conexion()
-        cursor = conexion.cursor()
-        cursor.execute("""
-            UPDATE pedidos 
-            SET nombre=%s, email=%s, celular=%s, direccion=%s, producto=%s 
-            WHERE id_pedido=%s
-        """, (nombre,email,celular,direccion,producto,id_pedido))
-        conexion.commit()
-        cursor.close()
-        conexion.close()
-
-        return redirect(url_for('ver_pedidos'))
-
-    return render_template("admin/admin_editarp.html", pedido=pedido)
-
 #---Eliminar pedido---
 @app.route('/admin/pedidos/eliminar/<int:id_pedido>')
 @login_required
 def eliminar_pedido(id_pedido):
-
+    # Verificar que el usuario sea admin
     if current_user.rol != "admin":
+        flash("No tienes permisos para eliminar pedidos.")
         return redirect(url_for("usuario"))
 
-    conexion = obtener_conexion()
-    cursor = conexion.cursor()
+    try:
+        # Conexión a la base de datos
+        conexion = obtener_conexion()
+        cursor = conexion.cursor()
 
-    cursor.execute("DELETE FROM pedidos WHERE id_pedido=%s", (id_pedido,))
-    conexion.commit()
+        # Ejecutar eliminación
+        cursor.execute("DELETE FROM pedidos WHERE id_pedido = %s", (id_pedido,))
+        conexion.commit()
+        flash(f"Pedido {id_pedido} eliminado correctamente.")
 
-    cursor.close()
-    conexion.close()
+    except Exception as e:
+        print("Error al eliminar pedido:", e)
+        flash("No se pudo eliminar el pedido. Intenta de nuevo.")
+
+    finally:
+        cursor.close()
+        conexion.close()
 
     return redirect(url_for('ver_pedidos'))
 
@@ -609,8 +607,8 @@ def eliminar_producto_bd(id_producto):
         return redirect(url_for("usuario"))
 
     eliminar_producto(id_producto)
+    return redirect(url_for("ver_productos_bd"))
 
-    return render_template("admin/eliminar_bd.html", id_producto=id_producto)
 #---Ruta para modificar registros de productos desde bd mysql---
 @app.route("/admin/productos_bd/editar/<int:id_producto>", methods=["GET","POST"])
 @login_required
